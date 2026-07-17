@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Nakama — descubra, avalie e organize seus animes.">
+  <title>Nakama — Seu universo de animes</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="home" data-root="">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header">
+    <div class="topbar shell">
+      <a class="brand" href="index.html" aria-label="Nakama — página inicial"><span class="brand-mark">N</span><span>NAKAMA</span></a>
+      <form class="global-search" role="search"><span class="search-icon" aria-hidden="true">⌕</span><input id="globalSearch" type="search" placeholder="Buscar anime..." autocomplete="off" aria-label="Buscar anime"><kbd>Ctrl K</kbd><div class="search-results" id="searchResults" hidden></div></form>
+      <div class="header-actions">
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Alternar tema">☼</button>
+        <a class="login-link auth-guest" href="login.html">Entrar</a>
+        <a class="profile-button auth-user" href="perfil.html" aria-label="Abrir perfil"><img src="assets/images/perfil/avatar.png" alt=""><span class="online-dot"></span></a>
+        <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+      </div>
+    </div>
+    <nav class="main-nav" id="mainNav" aria-label="Navegação principal"><div class="shell nav-inner"><a class="active" href="index.html">Home</a><a href="animes.html">Animes</a><a href="calendario.html">Calendário</a><a href="ranking.html">Ranking</a><a href="ranking-usuarios.html">Ranking de usuários</a><a class="nav-list-link auth-user" href="perfil.html#minha-lista"><span>＋</span> Minha lista</a></div></nav>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero shell" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="pulse"></span> Anime em exibição</span>
+        <p class="hero-kicker">TEMPORADA DE VERÃO 2026 • STUDIO EEK</p>
+        <h1 id="hero-title">Tomb Raider<br><span>King</span></h1>
+        <p class="hero-description">Depois de ser traído e deixado para morrer, Joo-Heon retorna ao passado. Com o conhecimento do futuro, ele inicia uma corrida para conquistar as relíquias mais poderosas.</p>
+        <div class="hero-meta"><span class="score-pill"><b>★ <span data-site-score>0.00</span></b> <small><span data-site-votes>0</span> votos no Nakama</small></span><span>Anime</span><i></i><span>12 episódios</span><i></i><span>Em exibição</span></div>
+        <div class="hero-actions"><a class="button button-primary" href="anime/tomb-raider-king.html"><span>▶</span> Ver anime</a><button class="button button-ghost quick-add" type="button" data-title="Tomb Raider King"><span>＋</span> Adicionar à lista</button></div>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="hero-ring ring-one"></div><div class="hero-ring ring-two"></div><img src="assets/images/capas/tomb-raider-king.jpg" alt="" width="400" height="600"><div class="floating-card floating-score"><span>★</span><div><b data-site-score>0.00</b><small>Nota no Nakama</small></div></div><div class="floating-card floating-rank"><small>SEU PROGRESSO</small><b><span data-home-episodes>0</span> / 12</b></div></div>
+    </section>
+
+    <section class="stats-strip" id="temporada" aria-label="Dados do anime no Nakama"><div class="shell stat-grid"><div><b>12</b><span>Episódios</span></div><div><b data-site-score>0.00</b><span>Nota média</span></div><div><b data-site-votes>0</b><span>Votos</span></div><div><b data-site-members>0</b><span>Membros</span></div></div></section>
+
+    <section class="content-section shell" id="catalogo">
+      <div class="section-heading"><div><span class="section-kicker">RECÉM-CADASTRADOS</span><h2>Últimos animes adicionados</h2></div><a href="animes.html">Ver todos os animes →</a></div>
+      <div class="media-grid single-catalog" id="mediaGrid">
+        <article class="media-card" data-type="anime" data-search="mushoku tensei jobless reincarnation rudeus greyrat" data-anime-card="mushoku-tensei" data-total-episodes="51">
+          <a class="poster" href="anime/mushoku-tensei.html"><img src="assets/images/capas/mushoku-tensei.png" alt="Capa de Mushoku Tensei: Jobless Reincarnation"><span class="card-badge new">RECENTE</span><span class="card-score">★ <span data-card-score>0.00</span></span></a>
+          <div class="card-copy"><span class="card-type">ANIME • 3 TEMPORADAS</span><h3><a href="anime/mushoku-tensei.html">Mushoku Tensei</a></h3><p>Aventura • Drama • Fantasia</p><div class="progress"><span data-card-progress style="width:0%"></span></div><small><span data-card-episodes>0</span> de 51 episódios vistos</small></div>
+        </article>
+        <article class="media-card" data-type="anime" data-search="dorohedoro caiman nikaido" data-anime-card="dorohedoro" data-total-episodes="23">
+          <a class="poster" href="anime/dorohedoro.html"><img src="assets/images/capas/dorohedoro.jpg" alt="Capa de Dorohedoro"><span class="card-badge production">3° TEMPORADA CONFIRMADA</span><span class="card-score">★ <span data-card-score>0.00</span></span></a>
+          <div class="card-copy"><span class="card-type">ANIME • 2 TEMPORADAS</span><h3><a href="anime/dorohedoro.html">Dorohedoro</a></h3><p>Ação • Comédia • Fantasia</p><div class="progress"><span data-card-progress style="width:0%"></span></div><small><span data-card-episodes>0</span> de 23 episódios vistos</small></div>
+        </article>
+        <article class="media-card latest-added-card" data-type="anime" data-search="the ghost in the shell kokaku kidotai motoko kusanagi" data-anime-card="the-ghost-in-the-shell" data-total-episodes="2">
+          <a class="poster" href="anime/the-ghost-in-the-shell.html"><img src="assets/images/capas/the-ghost-in-the-shell.jpg" alt="Capa de The Ghost in the Shell"><span class="card-badge new">ÚLTIMO ADICIONADO</span><span class="card-score">★ <span data-card-score>0.00</span></span></a>
+          <div class="card-copy"><span class="card-type">ANIME • 1ª TEMPORADA</span><h3><a href="anime/the-ghost-in-the-shell.html">The Ghost in the Shell</a></h3><p>Ação • Cyberpunk • Ficção científica</p><div class="progress"><span data-card-progress style="width:0%"></span></div><small><span data-card-episodes>0</span> de 2 episódios disponíveis</small></div>
+        </article>
+        <article class="catalog-message"><span class="section-kicker">SEU CONTROLE</span><h2>Acompanhe cada episódio.</h2><p>Digite manualmente o episódio em que parou ou use o botão “+” para avançar um por vez. Seu progresso, voto e lista ficam salvos no seu perfil.</p><a class="button button-ghost auth-guest" href="login.html">Criar meu perfil</a><a class="button button-ghost auth-user" href="perfil.html">Ver minha lista</a></article>
+      </div>
+    </section>
+
+    <section class="home-release-section" id="calendario">
+      <div class="shell">
+        <div class="section-heading"><div><span class="section-kicker">AGENDA NAKAMA</span><h2>Próximos lançamentos</h2></div><div class="release-heading-actions"><small class="release-updated">Atualizado em 17 jul. 2026</small><a href="calendario.html">Abrir calendário →</a></div></div>
+        <div class="home-release-grid">
+          <article class="release-panel">
+            <div class="release-panel-heading"><span class="release-icon">▶</span><div><small>EM EXIBIÇÃO</small><h3>Próximos episódios</h3></div></div>
+            <a class="release-item" href="anime/mushoku-tensei.html"><time datetime="2026-07-19"><strong>19</strong><span>JUL</span></time><div><span>Mushoku Tensei</span><b>3ª temporada • Episódio 4</b><small>Domingo • 24:00 no Japão</small></div><i>→</i></a>
+            <a class="release-item" href="anime/the-ghost-in-the-shell.html"><time datetime="2026-07-21"><strong>21</strong><span>JUL</span></time><div><span>The Ghost in the Shell</span><b>1ª temporada • Episódio 3</b><small>Terça-feira • Prime Video</small></div><i>→</i></a>
+            <a class="release-item" href="anime/tomb-raider-king.html"><time datetime="2026-07-22"><strong>22</strong><span>JUL</span></time><div><span>Tomb Raider King</span><b>1ª temporada • Episódio 3</b><small>Quarta-feira • exibição semanal</small></div><i>→</i></a>
+          </article>
+          <article class="release-panel next-season-panel">
+            <div class="release-panel-heading"><span class="release-icon">◆</span><div><small>ANÚNCIOS</small><h3>Próximas temporadas</h3></div></div>
+            <a class="release-item season-release-item" href="anime/dorohedoro.html"><div class="season-release-badge"><strong>3°</strong><span>TEMPORADA</span></div><div><span>Dorohedoro</span><b>Temporada confirmada</b><small>Em produção • data ainda não anunciada</small></div><i>→</i></a>
+            <div class="release-watch-note"><span>◷</span><p>Assim que uma data oficial for anunciada, ela aparecerá nesta agenda.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="index.html"><span class="brand-mark">N</span><span>NAKAMA</span></a><p>Seu catálogo de animes em português.</p><nav aria-label="Links do rodapé"><a href="login.html" class="auth-guest">Entrar</a><a href="perfil.html" class="auth-user">Perfil</a></nav></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

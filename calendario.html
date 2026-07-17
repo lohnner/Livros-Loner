@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Calendário dos próximos episódios e temporadas no Nakama.">
+  <title>Calendário — Nakama</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="calendar" data-root="">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header">
+    <div class="topbar shell">
+      <a class="brand" href="index.html" aria-label="Nakama — Home"><span class="brand-mark">N</span><span>NAKAMA</span></a>
+      <form class="global-search" role="search"><span class="search-icon" aria-hidden="true">⌕</span><input id="globalSearch" type="search" placeholder="Buscar anime..." autocomplete="off" aria-label="Buscar anime"><kbd>Ctrl K</kbd><div class="search-results" id="searchResults" hidden></div></form>
+      <div class="header-actions"><button class="icon-button" id="themeToggle" type="button" aria-label="Alternar tema">☼</button><a class="login-link auth-guest" href="login.html">Entrar</a><a class="profile-button auth-user" href="perfil.html" aria-label="Abrir perfil"><img src="assets/images/perfil/avatar.png" alt=""><span class="online-dot"></span></a><button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button></div>
+    </div>
+    <nav class="main-nav" id="mainNav" aria-label="Navegação principal"><div class="shell nav-inner"><a href="index.html">Home</a><a href="animes.html">Animes</a><a class="active" href="calendario.html">Calendário</a><a href="ranking.html">Ranking</a><a href="ranking-usuarios.html">Ranking de usuários</a><a class="nav-list-link auth-user" href="perfil.html#minha-lista"><span>＋</span> Minha lista</a></div></nav>
+  </header>
+
+  <main id="conteudo" class="calendar-page">
+    <section class="catalog-hero calendar-hero">
+      <div class="shell catalog-hero-inner">
+        <div><span class="eyebrow">AGENDA NAKAMA</span><h1>Calendário</h1><p>Acompanhe as datas dos próximos episódios e temporadas confirmadas.</p></div>
+        <div class="catalog-count"><strong>3</strong><span>Próximos episódios</span></div>
+      </div>
+    </section>
+
+    <section class="shell calendar-content">
+      <div class="calendar-toolbar">
+        <div><span class="section-kicker">SEMANA ATUAL</span><h2>17–23 de julho de 2026</h2></div>
+        <span>Atualizado em 17 jul. 2026</span>
+      </div>
+
+      <div class="calendar-week" aria-label="Semana de 17 a 23 de julho de 2026">
+        <div class="calendar-day is-today"><span>SEX</span><strong>17</strong><small>Hoje</small></div>
+        <div class="calendar-day"><span>SÁB</span><strong>18</strong><small>—</small></div>
+        <div class="calendar-day has-release"><span>DOM</span><strong>19</strong><small>1 episódio</small></div>
+        <div class="calendar-day"><span>SEG</span><strong>20</strong><small>—</small></div>
+        <div class="calendar-day has-release"><span>TER</span><strong>21</strong><small>1 episódio</small></div>
+        <div class="calendar-day has-release"><span>QUA</span><strong>22</strong><small>1 episódio</small></div>
+        <div class="calendar-day"><span>QUI</span><strong>23</strong><small>—</small></div>
+      </div>
+
+      <div class="calendar-layout">
+        <section class="calendar-events">
+          <div class="calendar-section-heading"><div><span class="section-kicker">EM EXIBIÇÃO</span><h2>Próximos episódios</h2></div></div>
+          <article class="calendar-event">
+            <time datetime="2026-07-20T00:00"><strong>19</strong><span>JUL</span></time>
+            <img src="assets/images/capas/mushoku-tensei.png" alt="Capa de Mushoku Tensei">
+            <div><span>DOMINGO • 24:00 NO JAPÃO</span><h3><a href="anime/mushoku-tensei.html">Mushoku Tensei</a></h3><p>3ª temporada • Episódio 4 — “Mago de nível Rei da Água”</p></div>
+            <a class="calendar-event-link" href="anime/mushoku-tensei.html" aria-label="Abrir Mushoku Tensei">→</a>
+          </article>
+          <article class="calendar-event">
+            <time datetime="2026-07-21"><strong>21</strong><span>JUL</span></time>
+            <img src="assets/images/capas/the-ghost-in-the-shell.jpg" alt="Capa de The Ghost in the Shell">
+            <div><span>TERÇA-FEIRA • PRIME VIDEO</span><h3><a href="anime/the-ghost-in-the-shell.html">The Ghost in the Shell</a></h3><p>1ª temporada • Episódio 3</p></div>
+            <a class="calendar-event-link" href="anime/the-ghost-in-the-shell.html" aria-label="Abrir The Ghost in the Shell">→</a>
+          </article>
+          <article class="calendar-event">
+            <time datetime="2026-07-22"><strong>22</strong><span>JUL</span></time>
+            <img src="assets/images/capas/tomb-raider-king.jpg" alt="Capa de Tomb Raider King">
+            <div><span>QUARTA-FEIRA • EXIBIÇÃO SEMANAL</span><h3><a href="anime/tomb-raider-king.html">Tomb Raider King</a></h3><p>1ª temporada • Episódio 3</p></div>
+            <a class="calendar-event-link" href="anime/tomb-raider-king.html" aria-label="Abrir Tomb Raider King">→</a>
+          </article>
+        </section>
+
+        <aside class="calendar-seasons">
+          <div class="calendar-section-heading"><div><span class="section-kicker">EM PRODUÇÃO</span><h2>Próximas temporadas</h2></div></div>
+          <article class="calendar-season-card">
+            <img src="assets/images/capas/dorohedoro.jpg" alt="Capa de Dorohedoro">
+            <div><span>DATA A ANUNCIAR</span><h3><a href="anime/dorohedoro.html">Dorohedoro</a></h3><strong>3° Temporada Confirmada</strong><p>A nova temporada está oficialmente em produção.</p></div>
+          </article>
+          <div class="calendar-info-note"><span>i</span><p>Datas sem anúncio oficial não são estimadas. O calendário será atualizado quando houver confirmação.</p></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="index.html"><span class="brand-mark">N</span><span>NAKAMA</span></a><p>Seu catálogo de animes em português.</p><nav><a href="index.html">Home</a><a href="animes.html">Animes</a><a href="calendario.html">Calendário</a></nav></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

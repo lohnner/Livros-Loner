@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Todos os animes cadastrados no Nakama.">
+  <title>Animes — Nakama</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="animes" data-root="">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header">
+    <div class="topbar shell">
+      <a class="brand" href="index.html" aria-label="Nakama — Home"><span class="brand-mark">N</span><span>NAKAMA</span></a>
+      <form class="global-search" role="search"><span class="search-icon" aria-hidden="true">⌕</span><input id="globalSearch" type="search" placeholder="Buscar anime..." autocomplete="off" aria-label="Buscar anime"><kbd>Ctrl K</kbd><div class="search-results" id="searchResults" hidden></div></form>
+      <div class="header-actions"><button class="icon-button" id="themeToggle" type="button" aria-label="Alternar tema">☼</button><a class="login-link auth-guest" href="login.html">Entrar</a><a class="profile-button auth-user" href="perfil.html" aria-label="Abrir perfil"><img src="assets/images/perfil/avatar.png" alt=""><span class="online-dot"></span></a><button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button></div>
+    </div>
+    <nav class="main-nav" id="mainNav" aria-label="Navegação principal"><div class="shell nav-inner"><a href="index.html">Home</a><a class="active" href="animes.html">Animes</a><a href="calendario.html">Calendário</a><a href="ranking.html">Ranking</a><a href="ranking-usuarios.html">Ranking de usuários</a><a class="nav-list-link auth-user" href="perfil.html#minha-lista"><span>＋</span> Minha lista</a></div></nav>
+  </header>
+
+  <main id="conteudo" class="catalog-page">
+    <section class="catalog-hero">
+      <div class="shell catalog-hero-inner">
+        <div><span class="eyebrow">CATÁLOGO NAKAMA</span><h1>Todos os animes</h1><p>Explore todos os títulos cadastrados, acompanhe seu progresso e monte sua lista.</p></div>
+        <div class="catalog-count"><strong>4</strong><span>Animes cadastrados</span></div>
+      </div>
+    </section>
+
+    <section class="shell catalog-content">
+      <div class="catalog-toolbar">
+        <div><span class="section-kicker">CATÁLOGO COMPLETO</span><h2>Animes</h2></div>
+        <label class="catalog-filter" for="catalogSearch"><span>⌕</span><input id="catalogSearch" type="search" placeholder="Filtrar catálogo..." autocomplete="off"></label>
+      </div>
+
+      <div class="catalog-grid" id="catalogGrid">
+        <article class="media-card catalog-anime-card" data-catalog-title="the ghost in the shell kokaku kidotai motoko kusanagi" data-anime-card="the-ghost-in-the-shell" data-total-episodes="2">
+          <a class="poster" href="anime/the-ghost-in-the-shell.html"><img src="assets/images/capas/the-ghost-in-the-shell.jpg" alt="Capa de The Ghost in the Shell"><span class="card-badge airing">EM EXIBIÇÃO</span><span class="card-score">★ <span data-card-score>0.00</span></span></a>
+          <div class="card-copy"><span class="card-type">ANIME • 1ª TEMPORADA</span><h3><a href="anime/the-ghost-in-the-shell.html">The Ghost in the Shell</a></h3><p>Ação • Cyberpunk • Ficção científica</p><div class="progress"><span data-card-progress style="width:0%"></span></div><small><span data-card-episodes>0</span> de 2 episódios disponíveis</small></div>
+        </article>
+
+        <article class="media-card catalog-anime-card" data-catalog-title="tomb raider king dogulwang" data-anime-card="tomb-raider-king" data-total-episodes="12">
+          <a class="poster" href="anime/tomb-raider-king.html"><img src="assets/images/capas/tomb-raider-king.jpg" alt="Capa de Tomb Raider King"><span class="card-badge airing">EM EXIBIÇÃO</span><span class="card-score">★ <span data-card-score>0.00</span></span></a>
+          <div class="card-copy"><span class="card-type">ANIME</span><h3><a href="anime/tomb-raider-king.html">Tomb Raider King</a></h3><p>Ação • Aventura • Fantasia</p><div class="progress"><span data-card-progress style="width:0%"></span></div><small><span data-card-episodes>0</span> de 12 episódios vistos</small></div>
+        </article>
+
+        <article class="media-card catalog-anime-card" data-catalog-title="dorohedoro caiman nikaido" data-anime-card="dorohedoro" data-total-episodes="23">
+          <a class="poster" href="anime/dorohedoro.html"><img src="assets/images/capas/dorohedoro.jpg" alt="Capa de Dorohedoro"><span class="card-badge production">3° TEMPORADA CONFIRMADA</span><span class="card-score">★ <span data-card-score>0.00</span></span></a>
+          <div class="card-copy"><span class="card-type">ANIME • 2 TEMPORADAS</span><h3><a href="anime/dorohedoro.html">Dorohedoro</a></h3><p>Ação • Comédia • Fantasia</p><div class="progress"><span data-card-progress style="width:0%"></span></div><small><span data-card-episodes>0</span> de 23 episódios vistos</small></div>
+        </article>
+
+        <article class="media-card catalog-anime-card" data-catalog-title="mushoku tensei jobless reincarnation rudeus greyrat" data-anime-card="mushoku-tensei" data-total-episodes="51">
+          <a class="poster" href="anime/mushoku-tensei.html"><img src="assets/images/capas/mushoku-tensei.png" alt="Capa de Mushoku Tensei: Jobless Reincarnation"><span class="card-badge airing">EM EXIBIÇÃO</span><span class="card-score">★ <span data-card-score>0.00</span></span></a>
+          <div class="card-copy"><span class="card-type">ANIME • 3 TEMPORADAS</span><h3><a href="anime/mushoku-tensei.html">Mushoku Tensei</a></h3><p>Aventura • Drama • Fantasia</p><div class="progress"><span data-card-progress style="width:0%"></span></div><small><span data-card-episodes>0</span> de 51 episódios vistos</small></div>
+        </article>
+      </div>
+      <div class="catalog-empty" id="catalogEmpty" hidden><span>⌕</span><h3>Nenhum anime encontrado</h3><p>Tente buscar por outro nome.</p></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="index.html"><span class="brand-mark">N</span><span>NAKAMA</span></a><p>Seu catálogo de animes em português.</p><nav><a href="index.html">Home</a><a href="animes.html">Animes</a><a class="auth-guest" href="login.html">Entrar</a><a class="auth-user" href="perfil.html">Perfil</a></nav></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ranking dos usuários com mais XP no Nakama.">
+  <title>Ranking de usuários — Nakama</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="user-ranking" data-root="">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header">
+    <div class="topbar shell">
+      <a class="brand" href="index.html" aria-label="Nakama — Home"><span class="brand-mark">N</span><span>NAKAMA</span></a>
+      <form class="global-search" role="search"><span class="search-icon" aria-hidden="true">⌕</span><input id="globalSearch" type="search" placeholder="Buscar anime..." autocomplete="off" aria-label="Buscar anime"><kbd>Ctrl K</kbd><div class="search-results" id="searchResults" hidden></div></form>
+      <div class="header-actions"><button class="icon-button" id="themeToggle" type="button" aria-label="Alternar tema">☼</button><a class="login-link auth-guest" href="login.html">Entrar</a><a class="profile-button auth-user" href="perfil.html" aria-label="Abrir perfil"><img src="assets/images/perfil/avatar.png" alt=""><span class="online-dot"></span></a><button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button></div>
+    </div>
+    <nav class="main-nav" id="mainNav" aria-label="Navegação principal"><div class="shell nav-inner"><a href="index.html">Home</a><a href="animes.html">Animes</a><a href="calendario.html">Calendário</a><a href="ranking.html">Ranking</a><a class="active" href="ranking-usuarios.html">Ranking de usuários</a><a class="nav-list-link auth-user" href="perfil.html#minha-lista"><span>＋</span> Minha lista</a></div></nav>
+  </header>
+
+  <main id="conteudo" class="leaderboard-page">
+    <section class="catalog-hero leaderboard-hero user-leaderboard-hero">
+      <div class="shell catalog-hero-inner">
+        <div><span class="eyebrow">COMUNIDADE NAKAMA</span><h1>Ranking de usuários</h1><p>Quanto mais episódios assistidos, mais XP e posições no ranking.</p></div>
+        <div class="catalog-count"><strong id="userRankingTotal">0</strong><span>Usuários cadastrados</span></div>
+      </div>
+    </section>
+    <section class="shell leaderboard-content">
+      <div class="leaderboard-heading"><div><span class="section-kicker">MAIORES NÍVEIS</span><h2>Classificação por XP</h2></div><p>Cada episódio assistido concede <strong>22 XP</strong>.</p></div>
+      <div class="leaderboard-list" id="userRankingList" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="index.html"><span class="brand-mark">N</span><span>NAKAMA</span></a><p>Seu catálogo de animes em português.</p><nav><a href="index.html">Home</a><a href="animes.html">Animes</a><a href="ranking.html">Ranking</a><a href="ranking-usuarios.html">Ranking de usuários</a></nav></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
