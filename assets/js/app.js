@@ -1,4 +1,4 @@
-(() => {
+(async () => {
   const root = document.documentElement;
   const body = document.body;
   const base = body.dataset.root || '';
@@ -6,6 +6,38 @@
   let toastTimer;
 
   const keys = { theme: 'nakama-theme', current: 'nakama-current-user', profiles: 'nakama-profiles' };
+  const firebaseConfig = {
+    apiKey: 'AIzaSyCgZgwPUo5Ehp5JIdprYfjhIb5VlyJ2RcM',
+    authDomain: 'games-loner.firebaseapp.com',
+    projectId: 'games-loner',
+    storageBucket: 'games-loner.firebasestorage.app',
+    messagingSenderId: '243629336740',
+    appId: '1:243629336740:web:841224ffe9661397781e31',
+    measurementId: 'G-37QVBMC7PP'
+  };
+  let firebaseAuth = null;
+  let firestore = null;
+  let firebaseUser = null;
+  const loadScript = source => new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = source;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+  try {
+    await loadScript('https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js');
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    firebaseAuth = firebase.auth();
+    firestore = firebase.firestore();
+    firebaseUser = await new Promise(resolve => {
+      const unsubscribe = firebaseAuth.onAuthStateChanged(user => { unsubscribe(); resolve(user); });
+    });
+  } catch (error) {
+    console.error('Não foi possível conectar ao Firebase.', error);
+  }
   const animeId = body.dataset.animeId || 'tomb-raider-king';
   const animeTitle = body.dataset.animeTitle || 'Tomb Raider King';
   const animeSlug = body.dataset.animeSlug || 'tomb-raider-king';
@@ -67,11 +99,61 @@
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
   }
 
-  function saveProfile(profile) {
+  function cacheProfile(profile) {
     const profiles = getProfiles();
-    profiles[profile.username] = profile;
+    profiles[profile.uid || profile.username] = profile;
     localStorage.setItem(keys.profiles, JSON.stringify(profiles));
   }
+
+  async function syncProfile(profile) {
+    if (!firestore || !firebaseUser || profile.uid !== firebaseUser.uid) return;
+    const publicProfile = {
+      username: profile.username,
+      displayName: profile.displayName,
+      joinedAt: profile.joinedAt,
+      anime: profile.anime || {}
+    };
+    await Promise.all([
+      firestore.collection('users').doc(profile.uid).set({ nakamaProfile: publicProfile }, { merge: true }),
+      firestore.collection('publicProfiles').doc(profile.uid).set(publicProfile, { merge: true })
+    ]);
+  }
+
+  function saveProfile(profile) {
+    cacheProfile(profile);
+    syncProfile(profile).catch(error => {
+      console.error('Falha ao sincronizar o perfil.', error);
+      showToast('Alteração salva neste aparelho. A sincronização será tentada novamente.');
+    });
+  }
+
+  async function hydrateProfiles() {
+    if (!firestore) return;
+    const profiles = {};
+    const publicSnapshot = await firestore.collection('publicProfiles').get();
+    publicSnapshot.forEach(document => { profiles[document.id] = { uid: document.id, ...document.data() }; });
+    if (firebaseUser) {
+      const privateDocument = await firestore.collection('users').doc(firebaseUser.uid).get();
+      const privateProfile = privateDocument.exists ? privateDocument.data().nakamaProfile : null;
+      const username = (privateProfile?.username || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'usuario')
+        .replace(/\s+/g, '_').replace(/[^\wÀ-ÿ.-]/g, '').slice(0, 24) || 'usuario';
+      const profile = {
+        uid: firebaseUser.uid,
+        username,
+        displayName: privateProfile?.displayName || firebaseUser.displayName || username,
+        joinedAt: privateProfile?.joinedAt || firebaseUser.metadata?.creationTime || new Date().toISOString(),
+        anime: privateProfile?.anime || profiles[firebaseUser.uid]?.anime || {}
+      };
+      profiles[firebaseUser.uid] = profile;
+      localStorage.setItem(keys.current, firebaseUser.uid);
+      await syncProfile(profile);
+    } else {
+      localStorage.removeItem(keys.current);
+    }
+    localStorage.setItem(keys.profiles, JSON.stringify(profiles));
+  }
+
+  try { await hydrateProfiles(); } catch (error) { console.error('Falha ao carregar perfis online.', error); }
 
   function requireLogin(message = 'Entre para salvar esta ação no seu perfil.') {
     if (getCurrentProfile()) return true;
@@ -191,7 +273,7 @@
   }
 
   if (body.dataset.page === 'user-ranking') {
-    const currentUsername = getCurrentName();
+    const currentUsername = getCurrentProfile()?.username || '';
     const ranking = Object.values(getProfiles()).map(profile => {
       const experience = profileExperience(profile);
       return {
@@ -224,18 +306,54 @@
     field.type = field.type === 'password' ? 'text' : 'password';
     event.currentTarget.textContent = field.type === 'password' ? '◉' : '◎';
   });
-  loginForm?.addEventListener('submit', event => {
+  loginForm?.addEventListener('submit', async event => {
     event.preventDefault();
     const usernameInput = document.getElementById('username');
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const username = usernameInput.value.trim();
     const error = document.getElementById('loginError');
-    if (username.length < 3 || password.length < 4) { error.textContent = 'Use pelo menos 3 caracteres no usuário e 4 na senha.'; return; }
-    const profiles = getProfiles();
-    if (!profiles[username]) profiles[username] = { username, displayName: username, joinedAt: new Date().toISOString(), anime: {} };
-    localStorage.setItem(keys.profiles, JSON.stringify(profiles));
-    localStorage.setItem(keys.current, username);
-    window.location.href = 'perfil.html';
+    const submit = loginForm.querySelector('[type="submit"]');
+    if (!firebaseAuth) { error.textContent = 'Não foi possível conectar ao Firebase. Verifique sua internet.'; return; }
+    if (username.length < 3 || password.length < 6) { error.textContent = 'Use pelo menos 3 caracteres no usuário e 6 na senha.'; return; }
+    error.textContent = '';
+    submit.disabled = true;
+    submit.textContent = 'Conectando...';
+    try {
+      const methods = await firebaseAuth.fetchSignInMethodsForEmail(email);
+      let credential;
+      if (methods.length) credential = await firebaseAuth.signInWithEmailAndPassword(email, password);
+      else {
+        credential = await firebaseAuth.createUserWithEmailAndPassword(email, password);
+        await credential.user.updateProfile({ displayName: username });
+      }
+      window.location.href = 'perfil.html';
+    } catch (loginError) {
+      const messages = {
+        'auth/invalid-email': 'Digite um endereço de e-mail válido.',
+        'auth/invalid-credential': 'E-mail ou senha incorretos.',
+        'auth/wrong-password': 'Senha incorreta.',
+        'auth/email-already-in-use': 'Este e-mail já possui uma conta.',
+        'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.',
+        'auth/too-many-requests': 'Muitas tentativas. Aguarde um pouco e tente novamente.'
+      };
+      error.textContent = messages[loginError.code] || 'Não foi possível entrar. Tente novamente.';
+      submit.disabled = false;
+      submit.textContent = 'Entrar ou criar conta';
+    }
+  });
+
+  document.getElementById('googleLogin')?.addEventListener('click', async event => {
+    const error = document.getElementById('loginError');
+    if (!firebaseAuth) { error.textContent = 'Não foi possível conectar ao Firebase.'; return; }
+    event.currentTarget.disabled = true;
+    try {
+      await firebaseAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      window.location.href = 'perfil.html';
+    } catch (loginError) {
+      if (loginError.code !== 'auth/popup-closed-by-user') error.textContent = 'Não foi possível entrar com o Google.';
+      event.currentTarget.disabled = false;
+    }
   });
 
   const getAnimeEntry = (profile, id = animeId) => profile?.anime?.[id] || { status: '', score: '', favorite: false, episodes: 0 };
@@ -436,7 +554,8 @@
     }
   }
 
-  document.getElementById('logoutButton')?.addEventListener('click', () => {
+  document.getElementById('logoutButton')?.addEventListener('click', async () => {
+    if (firebaseAuth) await firebaseAuth.signOut();
     localStorage.removeItem(keys.current);
     window.location.href = 'login.html';
   });
