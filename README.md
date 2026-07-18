@@ -1,4 +1,4 @@
-# Animes Dihhz
+# Nakama
 
 Protótipo de catálogo exclusivamente de animes em português, inspirado na organização de plataformas como o MyAnimeList.
 
