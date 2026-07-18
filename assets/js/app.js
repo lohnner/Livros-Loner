@@ -357,27 +357,72 @@
     }
   });
 
+  document.querySelectorAll('.info-card dt').forEach(term => {
+    if (term.textContent.trim().toLowerCase() === 'formato') term.closest('div')?.remove();
+  });
+
+  const episodeCatalog = [
+    [
+      ['The Heirs of the Dragon', '2022-08-21', '21 ago. 2022'],
+      ['The Rogue Prince', '2022-08-28', '28 ago. 2022'],
+      ['Second of His Name', '2022-09-04', '4 set. 2022'],
+      ['King of the Narrow Sea', '2022-09-11', '11 set. 2022'],
+      ['We Light the Way', '2022-09-18', '18 set. 2022'],
+      ['The Princess and the Queen', '2022-09-25', '25 set. 2022'],
+      ['Driftmark', '2022-10-02', '2 out. 2022'],
+      ['The Lord of the Tides', '2022-10-09', '9 out. 2022'],
+      ['The Green Council', '2022-10-16', '16 out. 2022'],
+      ['The Black Queen', '2022-10-23', '23 out. 2022']
+    ],
+    [
+      ['A Son for a Son', '2024-06-16', '16 jun. 2024'],
+      ['Rhaenyra the Cruel', '2024-06-23', '23 jun. 2024'],
+      ['The Burning Mill', '2024-06-30', '30 jun. 2024'],
+      ['The Red Dragon and the Gold', '2024-07-07', '7 jul. 2024'],
+      ['Regent', '2024-07-14', '14 jul. 2024'],
+      ['Smallfolk', '2024-07-21', '21 jul. 2024'],
+      ['The Red Sowing', '2024-07-28', '28 jul. 2024'],
+      ['The Queen Who Ever Was', '2024-08-04', '4 ago. 2024']
+    ],
+    [
+      ['Salt and Sea, Fire and Blood', '2026-06-21', '21 jun. 2026'],
+      ['Queen’s Landing', '2026-06-28', '28 jun. 2026'],
+      ['Rhaenyra Triumphant', '2026-07-05', '5 jul. 2026'],
+      ['Episódio 4', '2026-07-12', '12 jul. 2026'],
+      ['Título ainda não divulgado', '2026-07-19', '19 jul. 2026'],
+      ['Título ainda não divulgado', '2026-07-26', '26 jul. 2026'],
+      ['Título ainda não divulgado', '2026-08-02', '2 ago. 2026'],
+      ['Título ainda não divulgado', '2026-08-09', '9 ago. 2026']
+    ]
+  ];
+
   if (body.dataset.page === 'season-details') {
     const seasonIndex = Number(body.dataset.seasonIndex);
-    const seasonLimit = Number(body.dataset.seasonLimit);
-    const seasonCopy = document.querySelector('.season-detail-copy');
-    if (seasonCopy && Number.isInteger(seasonIndex) && seasonLimit > 0) {
-      seasonCopy.insertAdjacentHTML('beforeend', `
-        <div class="episode-tracker season-page-tracker" aria-label="Registrar episódios assistidos">
-          <div class="season-tracker">
-            <div class="season-tracker-heading">
-              <div><span>SEU PROGRESSO NA TEMPORADA ${seasonIndex + 1}</span><strong>Marque quantos episódios assistiu</strong></div>
-              <b><span data-season-progress-label="${seasonIndex}">0</span>/${seasonLimit}</b>
-            </div>
-            <div class="episode-tracker-controls">
-              <input class="season-episode-input" data-season-index="${seasonIndex}" type="number" min="0" max="${seasonLimit}" value="0" aria-label="Episódios vistos da temporada ${seasonIndex + 1}">
-              <button class="season-episode-plus" data-season-index="${seasonIndex}" type="button" aria-label="Marcar próximo episódio">＋</button>
-            </div>
-            <div class="episode-progress-bar"><span data-season-progress-bar="${seasonIndex}"></span></div>
-          </div>
-          <small>Cada episódio marcado concede ${experiencePerEpisode} XP e atualiza o progresso total da série.</small>
+    const availableEpisodes = Number(body.dataset.seasonLimit);
+    const episodePanel = document.querySelector('#episodios .content-card');
+    const episodes = episodeCatalog[seasonIndex] || [];
+    if (episodePanel && episodes.length) {
+      episodePanel.innerHTML = `
+        <div class="content-card-heading episode-list-heading">
+          <div><span class="section-kicker">TEMPORADA ${seasonIndex + 1}</span><h2>Lista de episódios</h2></div>
+          <div class="episode-list-total"><strong data-episode-list-progress>0</strong><span>/${availableEpisodes} assistidos</span></div>
         </div>
-      `);
+        <div class="episode-list-progress"><span data-episode-list-progress-bar></span></div>
+        <div class="episode-checklist">
+          ${episodes.map(([title, date, displayDate], episodeIndex) => {
+            const number = episodeIndex + 1;
+            const available = number <= availableEpisodes;
+            return `<label class="episode-check-item${available ? '' : ' is-upcoming'}">
+              <input class="episode-watch-checkbox" type="checkbox" data-season-index="${seasonIndex}" data-episode-number="${number}" ${available ? '' : 'disabled'}>
+              <span class="episode-checkmark" aria-hidden="true"></span>
+              <span class="episode-number">EP ${String(number).padStart(2, '0')}</span>
+              <span class="episode-copy"><strong>${title}</strong><small>${available ? 'Lançado em' : 'Estreia oficial'} <time datetime="${date}">${displayDate}</time></small></span>
+              <span class="episode-status">${available ? 'Marcar como assistido' : 'Em breve'}</span>
+            </label>`;
+          }).join('')}
+        </div>
+        <p class="episode-source">Datas oficiais divulgadas pela <a href="https://press.wbd.com/na/property/house-dragon/synopses" target="_blank" rel="noopener">HBO / Warner Bros. Discovery</a>. Cada episódio marcado concede ${experiencePerEpisode} XP.</p>
+      `;
     }
   }
 
@@ -393,6 +438,15 @@
       remaining -= watched;
       return watched;
     });
+  };
+  const getSeasonWatched = (entry, index) => {
+    const limit = seasonEpisodeLimits[index] || 0;
+    const stored = entry?.watchedEpisodes?.[index];
+    if (Array.isArray(stored)) {
+      return [...new Set(stored.map(Number).filter(number => number >= 1 && number <= limit))].sort((a, b) => a - b);
+    }
+    const count = getSeasonValues(entry)[index] || 0;
+    return Array.from({ length: count }, (_, episodeIndex) => episodeIndex + 1);
   };
   const statusSelect = document.getElementById('statusSelect');
   const scoreSelect = document.getElementById('scoreSelect');
@@ -433,6 +487,17 @@
         document.querySelectorAll(`[data-season-progress-label="${index}"]`).forEach(item => item.textContent = String(watched));
         document.querySelectorAll(`[data-season-progress-bar="${index}"]`).forEach(item => item.style.width = `${(watched / limit) * 100}%`);
       });
+      document.querySelectorAll('.episode-watch-checkbox').forEach(input => {
+        const index = Number(input.dataset.seasonIndex);
+        input.checked = getSeasonWatched(entry, index).includes(Number(input.dataset.episodeNumber));
+      });
+      const pageSeasonIndex = Number(body.dataset.seasonIndex);
+      const pageSeasonLimit = Number(body.dataset.seasonLimit);
+      if (Number.isInteger(pageSeasonIndex) && pageSeasonLimit > 0) {
+        const watched = getSeasonWatched(entry, pageSeasonIndex).length;
+        document.querySelectorAll('[data-episode-list-progress]').forEach(item => item.textContent = String(watched));
+        document.querySelectorAll('[data-episode-list-progress-bar]').forEach(item => item.style.width = `${(watched / pageSeasonLimit) * 100}%`);
+      }
     }
     document.querySelectorAll('[data-home-episodes]').forEach(item => item.textContent = String(episodes));
     document.querySelectorAll('[data-home-progress]').forEach(item => item.style.width = `${(episodes / totalEpisodes) * 100}%`);
@@ -519,6 +584,30 @@
       updateSeasonProgress(index, (seasons[index] || 0) + 1);
     });
   });
+  document.querySelectorAll('.episode-watch-checkbox').forEach(input => {
+    input.addEventListener('change', () => {
+      if (!requireLogin('Entre para salvar os episódios assistidos.')) {
+        updateAnimeControls();
+        return;
+      }
+      const index = Number(input.dataset.seasonIndex);
+      const episodeNumber = Number(input.dataset.episodeNumber);
+      const current = getAnimeEntry(getCurrentProfile());
+      const watched = new Set(getSeasonWatched(current, index));
+      if (input.checked) watched.add(episodeNumber);
+      else watched.delete(episodeNumber);
+      const watchedEpisodes = { ...(current.watchedEpisodes || {}), [index]: [...watched].sort((a, b) => a - b) };
+      const seasons = getSeasonValues(current);
+      const previousTotal = seasons.reduce((sum, value) => sum + value, 0);
+      seasons[index] = watched.size;
+      const episodes = seasons.reduce((sum, value) => sum + value, 0);
+      const status = episodes > 0 && (!current.status || current.status === 'planejo' || current.status === 'concluido') ? 'assistindo' : current.status;
+      if (updateEntry({ watchedEpisodes, seasons, episodes, status })) {
+        const difference = episodes - previousTotal;
+        showToast(difference > 0 ? `Episódio ${episodeNumber} marcado • +${experiencePerEpisode} XP` : `Episódio ${episodeNumber} desmarcado`);
+      }
+    });
+  });
   favoriteButton?.addEventListener('click', () => {
     const next = !getAnimeEntry(getCurrentProfile()).favorite;
     if (updateEntry({ favorite: next })) showToast(next ? 'Adicionado aos favoritos' : 'Removido dos favoritos');
@@ -529,12 +618,19 @@
     scoreSelect?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 
-  document.querySelectorAll('.detail-tabs button').forEach(button => button.addEventListener('click', () => {
+  const activateDetailTab = tabName => {
     document.querySelectorAll('.detail-tabs button').forEach(item => item.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
-    button.classList.add('active');
-    document.getElementById(button.dataset.tab)?.classList.add('active');
+    document.querySelector(`.detail-tabs button[data-tab="${tabName}"]`)?.classList.add('active');
+    document.getElementById(tabName)?.classList.add('active');
+  };
+  document.querySelectorAll('.detail-tabs button').forEach(button => button.addEventListener('click', () => activateDetailTab(button.dataset.tab)));
+  document.querySelectorAll('a[href="#episodios"]').forEach(link => link.addEventListener('click', event => {
+    event.preventDefault();
+    activateDetailTab('episodios');
+    document.querySelector('.detail-tabs')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }));
+  if (window.location.hash === '#episodios') activateDetailTab('episodios');
 
   if (body.dataset.page === 'profile') {
     const profile = getCurrentProfile();
