@@ -88,6 +88,16 @@ body[data-series-id="a-casa-do-dragao"] .detail-copy h1,.season-detail-copy h1{f
 @media(max-width:760px){.series-season-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:500px){.brand{font-size:14px;letter-spacing:.6px}.series-season-grid{grid-template-columns:1fr}}
 .catalog-message:after{content:"C"}
+.season-showcase{padding:42px 0 54px;background:linear-gradient(180deg,var(--surface-2),var(--bg));border-block:1px solid var(--line)}
+.season-showcase-heading{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:24px}
+.season-showcase-heading h2{font:800 clamp(38px,5vw,58px)/.95 var(--heading);text-transform:uppercase;margin:5px 0 0}
+.season-showcase-heading p{max-width:430px;color:var(--muted);font-size:11px;text-align:right;margin:0}
+.season-showcase .series-season-grid{grid-template-columns:repeat(3,minmax(0,260px));justify-content:center;gap:28px}
+.season-showcase .series-season-grid a{box-shadow:0 16px 38px rgba(0,0,0,.18)}
+.season-page-tracker{max-width:560px;margin-top:25px}
+.season-page-tracker .season-tracker{border-left:4px solid var(--red)}
+@media(max-width:760px){.season-showcase-heading{display:block}.season-showcase-heading p{text-align:left;margin-top:10px}.season-showcase .series-season-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}}
+@media(max-width:500px){.season-showcase .series-season-grid{grid-template-columns:1fr}.season-showcase .series-season-grid a{width:min(260px,100%);margin-inline:auto}}
 .leaderboard-avatar{overflow:hidden}.leaderboard-avatar img{width:100%;height:100%;object-fit:cover;display:block}
 .profile-button,.profile-button img,.profile-avatar,.leaderboard-avatar{border-radius:0}
 .nickname-modal{position:fixed;inset:0;z-index:1000;background:rgba(4,7,12,.86);backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px}.nickname-modal[hidden]{display:none}.nickname-dialog{width:min(480px,100%);padding:42px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}.nickname-dialog h2{font:800 42px/1 var(--heading);text-transform:uppercase;margin:8px 0 12px}.nickname-dialog>p{color:var(--muted);font-size:11px}.nickname-dialog form{display:flex;flex-direction:column;margin-top:22px}.nickname-dialog label{font-size:9px;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:6px}.nickname-dialog input{height:46px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:0 13px;outline:none}.nickname-dialog input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,51,63,.1)}.nickname-dialog .button{margin-top:16px}.nickname-required{overflow:hidden}

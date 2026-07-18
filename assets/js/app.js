@@ -357,6 +357,30 @@
     }
   });
 
+  if (body.dataset.page === 'season-details') {
+    const seasonIndex = Number(body.dataset.seasonIndex);
+    const seasonLimit = Number(body.dataset.seasonLimit);
+    const seasonCopy = document.querySelector('.season-detail-copy');
+    if (seasonCopy && Number.isInteger(seasonIndex) && seasonLimit > 0) {
+      seasonCopy.insertAdjacentHTML('beforeend', `
+        <div class="episode-tracker season-page-tracker" aria-label="Registrar episódios assistidos">
+          <div class="season-tracker">
+            <div class="season-tracker-heading">
+              <div><span>SEU PROGRESSO NA TEMPORADA ${seasonIndex + 1}</span><strong>Marque quantos episódios assistiu</strong></div>
+              <b><span data-season-progress-label="${seasonIndex}">0</span>/${seasonLimit}</b>
+            </div>
+            <div class="episode-tracker-controls">
+              <input class="season-episode-input" data-season-index="${seasonIndex}" type="number" min="0" max="${seasonLimit}" value="0" aria-label="Episódios vistos da temporada ${seasonIndex + 1}">
+              <button class="season-episode-plus" data-season-index="${seasonIndex}" type="button" aria-label="Marcar próximo episódio">＋</button>
+            </div>
+            <div class="episode-progress-bar"><span data-season-progress-bar="${seasonIndex}"></span></div>
+          </div>
+          <small>Cada episódio marcado concede ${experiencePerEpisode} XP e atualiza o progresso total da série.</small>
+        </div>
+      `);
+    }
+  }
+
   const getAnimeEntry = (profile, id = animeId) => profile?.anime?.[id] || { status: '', score: '', favorite: false, episodes: 0 };
   const getSeasonValues = entry => {
     if (!seasonEpisodeLimits.length) return [];
@@ -466,7 +490,10 @@
     if (updateEntry({ episodes, status })) showToast(`Episódio ${episodes} marcado • +${experiencePerEpisode} XP`);
   });
   function updateSeasonProgress(index, requestedEpisodes) {
-    if (!requireLogin('Entre para salvar seu progresso.')) return;
+    if (!requireLogin('Entre para salvar seu progresso.')) {
+      updateAnimeControls();
+      return;
+    }
     const current = getAnimeEntry(getCurrentProfile());
     const seasons = getSeasonValues(current);
     const previousTotal = seasons.reduce((sum, value) => sum + value, 0);
