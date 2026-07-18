@@ -53,13 +53,14 @@
   const initials = name => name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
   const htmlEscapes = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
   const escapeHtml = value => String(value).replace(/[&<>"']/g, character => htmlEscapes[character]);
-  const animeEpisodeLimits = { 'tomb-raider-king': 12, dorohedoro: 23, 'mushoku-tensei': 51, 'the-ghost-in-the-shell': 2 };
+  const animeEpisodeLimits = { 'tomb-raider-king': 12, dorohedoro: 23, 'mushoku-tensei': 51, 'the-ghost-in-the-shell': 2, naruto: 220 };
   const airingAnime = { 'tomb-raider-king': true, 'mushoku-tensei': true, 'the-ghost-in-the-shell': true };
   const animeCatalog = {
     'tomb-raider-king': { title: 'Tomb Raider King', slug: 'tomb-raider-king', cover: 'assets/images/capas/tomb-raider-king.jpg', totalEpisodes: 12 },
     dorohedoro: { title: 'Dorohedoro', slug: 'dorohedoro', cover: 'assets/images/capas/dorohedoro.jpg', totalEpisodes: 23 },
     'mushoku-tensei': { title: 'Mushoku Tensei: Jobless Reincarnation', slug: 'mushoku-tensei', cover: 'assets/images/capas/mushoku-tensei.png', totalEpisodes: 51 },
-    'the-ghost-in-the-shell': { title: 'The Ghost in the Shell', slug: 'the-ghost-in-the-shell', cover: 'assets/images/capas/the-ghost-in-the-shell.jpg', totalEpisodes: 2 }
+    'the-ghost-in-the-shell': { title: 'The Ghost in the Shell', slug: 'the-ghost-in-the-shell', cover: 'assets/images/capas/the-ghost-in-the-shell.jpg', totalEpisodes: 2 },
+    naruto: { title: 'Naruto', slug: 'naruto', cover: 'assets/images/capas/naruto.jpg', totalEpisodes: 220 }
   };
   const safeEpisodes = (id, entry = {}) => Math.min(animeEpisodeLimits[id] || Number(entry.totalEpisodes) || 0, Math.max(0, Number(entry.episodes) || 0));
   const formatNumber = value => new Intl.NumberFormat('pt-BR').format(value);
@@ -228,7 +229,8 @@
       { terms: 'tomb raider king dogulwang', title: 'Tomb Raider King', slug: 'tomb-raider-king', cover: 'tomb-raider-king.jpg', episodes: 12 },
       { terms: 'dorohedoro caiman nikaido', title: 'Dorohedoro', slug: 'dorohedoro', cover: 'dorohedoro.jpg', episodes: 23 },
       { terms: 'mushoku tensei jobless reincarnation rudeus greyrat', title: 'Mushoku Tensei: Jobless Reincarnation', slug: 'mushoku-tensei', cover: 'mushoku-tensei.png', episodes: 51 },
-      { terms: 'the ghost in the shell kokaku kidotai motoko kusanagi', title: 'The Ghost in the Shell', slug: 'the-ghost-in-the-shell', cover: 'the-ghost-in-the-shell.jpg', episodes: 2 }
+      { terms: 'the ghost in the shell kokaku kidotai motoko kusanagi', title: 'The Ghost in the Shell', slug: 'the-ghost-in-the-shell', cover: 'the-ghost-in-the-shell.jpg', episodes: 2 },
+      { terms: 'naruto naruto classico uzumaki sasuke sakura kakashi', title: 'Naruto', slug: 'naruto', cover: 'naruto.jpg', episodes: 220 }
     ];
     const matches = catalog.filter(anime => anime.terms.includes(query));
     results.innerHTML = matches.length
