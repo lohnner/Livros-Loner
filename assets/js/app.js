@@ -1,766 +1,99 @@
-(async () => {
-  const root = document.documentElement;
-  const body = document.body;
-  const base = body.dataset.root || '';
-  const toast = document.getElementById('toast');
-  let toastTimer;
+(() => {
+  const root = document.body.dataset.root || '';
+  const menu = document.getElementById('mainNav');
+  const menuToggle = document.querySelector('[data-menu-toggle]');
+  const searchDialog = document.getElementById('searchDialog');
+  const searchInput = document.getElementById('siteSearch');
+  const searchResults = document.getElementById('searchResults');
 
-  const keys = { theme: 'central-series-theme', current: 'central-series-current-user', profiles: 'central-series-profiles' };
-  const firebaseConfig = {
-    apiKey: 'AIzaSyCgZgwPUo5Ehp5JIdprYfjhIb5VlyJ2RcM',
-    authDomain: 'games-loner.firebaseapp.com',
-    projectId: 'games-loner',
-    storageBucket: 'games-loner.firebasestorage.app',
-    messagingSenderId: '243629336740',
-    appId: '1:243629336740:web:841224ffe9661397781e31',
-    measurementId: 'G-37QVBMC7PP'
-  };
-  let firebaseAuth = null;
-  let firestore = null;
-  let firebaseUser = null;
-  let requiresNickname = false;
-  const loadScript = source => new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = source;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.appendChild(script);
-  });
-  try {
-    await loadScript('https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js');
-    await loadScript('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js');
-    await loadScript('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js');
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    firebaseAuth = firebase.auth();
-    firestore = firebase.firestore();
-    firebaseUser = await new Promise(resolve => {
-      const unsubscribe = firebaseAuth.onAuthStateChanged(user => { unsubscribe(); resolve(user); });
-    });
-  } catch (error) {
-    console.error('Não foi possível conectar ao Firebase.', error);
-  }
-  const animeId = body.dataset.seriesId || 'a-casa-do-dragao';
-  const animeTitle = body.dataset.seriesTitle || 'A Casa do Dragão';
-  const animeSlug = body.dataset.seriesSlug || 'a-casa-do-dragao';
-  const animeCover = body.dataset.seriesCover || 'assets/images/capas/a-casa-do-dragao-temporada-3.jpg';
-  const totalEpisodes = Number(body.dataset.totalEpisodes) || 22;
-  const seasonEpisodeLimits = (body.dataset.seasonEpisodes || '').split(',').map(Number).filter(value => value > 0);
-  const isAiring = body.dataset.airing === 'true';
-  const experiencePerEpisode = 22;
-  const getProfiles = () => { try { return JSON.parse(localStorage.getItem(keys.profiles)) || {}; } catch { return {}; } };
-  const getCurrentName = () => localStorage.getItem(keys.current) || '';
-  const getCurrentProfile = () => getProfiles()[getCurrentName()] || null;
-  const initials = name => name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
-  const htmlEscapes = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-  const escapeHtml = value => String(value).replace(/[&<>"']/g, character => htmlEscapes[character]);
-  const animeEpisodeLimits = { 'a-casa-do-dragao': 22, friends: 236 };
-  const airingAnime = { 'a-casa-do-dragao': true, friends: false };
-  const animeCatalog = {
-    'a-casa-do-dragao': { title: 'A Casa do Dragão', slug: 'a-casa-do-dragao', cover: 'assets/images/capas/a-casa-do-dragao-temporada-3.jpg', totalEpisodes: 22 },
-    friends: { title: 'Friends', slug: 'friends', cover: 'assets/images/capas/friends-temporada-10.jpg', totalEpisodes: 236 }
-  };
-  const safeEpisodes = (id, entry = {}) => Math.min(animeEpisodeLimits[id] || Number(entry.totalEpisodes) || 0, Math.max(0, Number(entry.episodes) || 0));
-  const formatNumber = value => new Intl.NumberFormat('pt-BR').format(value);
-  const profileExperience = profile => Object.entries(profile?.anime || {}).reduce((total, [id, entry]) => total + (animeEpisodeLimits[id] ? safeEpisodes(id, entry) : 0), 0) * experiencePerEpisode;
-
-  function experienceForLevel(level) {
-    const n = Math.max(0, level - 1);
-    return Math.round((50 * n ** 3 - 150 * n ** 2 + 400 * n) / 3);
-  }
-
-  function levelFromExperience(experience) {
-    let low = 1;
-    let high = 2;
-    while (experienceForLevel(high) <= experience) {
-      low = high;
-      high *= 2;
+  const catalog = [
+    {
+      title: 'A Armadilha do Paraíso',
+      subtitle: 'Livro · Trilogia Han Solo, volume 1',
+      terms: 'a armadilha do paraiso paradise snare han solo star wars livro',
+      href: `${root}livros/a-armadilha-do-paraiso.html`,
+      image: `${root}assets/images/livros/a-armadilha-do-paraiso.jpg`
+    },
+    {
+      title: 'A. C. Crispin',
+      subtitle: 'Autora · Ficção científica',
+      terms: 'a c crispin ann carol crispin autora escritora star wars star trek',
+      href: `${root}autores/a-c-crispin.html`,
+      image: `${root}assets/images/autores/a-c-crispin.jpg`
     }
-    while (low + 1 < high) {
-      const middle = Math.floor((low + high) / 2);
-      if (experienceForLevel(middle) <= experience) low = middle;
-      else high = middle;
-    }
-    const currentLevelXp = experienceForLevel(low);
-    const nextLevelXp = experienceForLevel(low + 1);
-    return {
-      level: low,
-      current: experience - currentLevelXp,
-      needed: nextLevelXp - currentLevelXp,
-      progress: ((experience - currentLevelXp) / (nextLevelXp - currentLevelXp)) * 100
-    };
-  }
-
-  function showToast(message) {
-    if (!toast) return;
-    toast.textContent = message;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
-  }
-
-  function cacheProfile(profile) {
-    const profiles = getProfiles();
-    profiles[profile.uid || profile.username] = profile;
-    localStorage.setItem(keys.profiles, JSON.stringify(profiles));
-  }
-
-  async function syncProfile(profile) {
-    if (!firestore || !firebaseUser || profile.uid !== firebaseUser.uid) return;
-    const publicProfile = {
-      username: profile.username,
-      displayName: profile.displayName,
-      joinedAt: profile.joinedAt,
-      photoURL: profile.photoURL || 'assets/images/perfil/avatar.png',
-      anime: profile.anime || {}
-    };
-    await Promise.all([
-      firestore.collection('users').doc(profile.uid).set({ centralSeriesProfile: publicProfile }, { merge: true }),
-      firestore.collection('publicProfiles').doc(profile.uid).set(publicProfile, { merge: true })
-    ]);
-  }
-
-  function saveProfile(profile) {
-    cacheProfile(profile);
-    syncProfile(profile).catch(error => {
-      console.error('Falha ao sincronizar o perfil.', error);
-      showToast('Alteração salva neste aparelho. A sincronização será tentada novamente.');
-    });
-  }
-
-  async function hydrateProfiles() {
-    if (!firestore) return;
-    const profiles = {};
-    const publicSnapshot = await firestore.collection('publicProfiles').get();
-    publicSnapshot.forEach(document => { profiles[document.id] = { uid: document.id, ...document.data() }; });
-    if (firebaseUser) {
-      const privateDocument = await firestore.collection('users').doc(firebaseUser.uid).get();
-      const privateProfile = privateDocument.exists ? privateDocument.data().centralSeriesProfile : null;
-      requiresNickname = !privateProfile?.username;
-      const username = (privateProfile?.username || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'usuario')
-        .replace(/\s+/g, '_').replace(/[^\wÀ-ÿ.-]/g, '').slice(0, 24) || 'usuario';
-      const profile = {
-        uid: firebaseUser.uid,
-        username,
-        displayName: privateProfile?.displayName || firebaseUser.displayName || username,
-        joinedAt: privateProfile?.joinedAt || firebaseUser.metadata?.creationTime || new Date().toISOString(),
-        photoURL: privateProfile?.photoURL || profiles[firebaseUser.uid]?.photoURL ||
-          (requiresNickname ? firebaseUser.photoURL : null) || 'assets/images/perfil/avatar.png',
-        anime: privateProfile?.anime || profiles[firebaseUser.uid]?.anime || {}
-      };
-      profiles[firebaseUser.uid] = profile;
-      localStorage.setItem(keys.current, firebaseUser.uid);
-      if (!requiresNickname) await syncProfile(profile);
-    } else {
-      localStorage.removeItem(keys.current);
-    }
-    localStorage.setItem(keys.profiles, JSON.stringify(profiles));
-  }
-
-  try { await hydrateProfiles(); } catch (error) { console.error('Falha ao carregar perfis online.', error); }
-
-  function requireLogin(message = 'Entre para salvar esta ação no seu perfil.') {
-    if (getCurrentProfile()) return true;
-    showToast(message);
-    setTimeout(() => { window.location.href = `${base}login.html`; }, 650);
-    return false;
-  }
-
-  root.dataset.theme = 'dark';
-  localStorage.removeItem(keys.theme);
-  document.getElementById('themeToggle')?.remove();
-
-  const currentProfile = getCurrentProfile();
-  if (currentProfile) {
-    body.classList.add('is-authenticated');
-    document.querySelectorAll('[data-user-initials]').forEach(item => item.textContent = initials(currentProfile.displayName || currentProfile.username));
-    document.querySelectorAll('.profile-button img').forEach(image => {
-      image.src = currentProfile.photoURL || `${base}assets/images/perfil/avatar.png`;
-      image.alt = `Foto de ${currentProfile.displayName || currentProfile.username}`;
-    });
-  } else {
-    body.classList.add('is-guest');
-  }
-
-  function updateSiteMetrics() {
-    const profiles = Object.values(getProfiles());
-    const votes = profiles.map(profile => Number(profile?.anime?.[animeId]?.score)).filter(score => score > 0);
-    const average = votes.length ? (votes.reduce((total, score) => total + score, 0) / votes.length).toFixed(2) : '0.00';
-    document.querySelectorAll('[data-site-score]').forEach(item => item.textContent = average);
-    document.querySelectorAll('[data-site-votes]').forEach(item => item.textContent = String(votes.length));
-    document.querySelectorAll('[data-site-members]').forEach(item => item.textContent = String(profiles.length));
-  }
-  updateSiteMetrics();
-
-  function updateCatalogCards() {
-    const profiles = Object.values(getProfiles());
-    const profile = getCurrentProfile();
-    document.querySelectorAll('[data-series-card]').forEach(card => {
-      const cardAnimeId = card.dataset.seriesCard;
-      const cardTotal = Number(card.dataset.totalEpisodes) || 1;
-      const entry = profile?.anime?.[cardAnimeId] || {};
-      const episodes = Math.min(cardTotal, Math.max(0, Number(entry.episodes) || 0));
-      const votes = profiles.map(item => Number(item?.anime?.[cardAnimeId]?.score)).filter(score => score > 0);
-      const average = votes.length ? (votes.reduce((sum, score) => sum + score, 0) / votes.length).toFixed(2) : '0.00';
-      card.querySelectorAll('[data-card-score]').forEach(item => item.textContent = average);
-      card.querySelectorAll('[data-card-episodes]').forEach(item => item.textContent = String(episodes));
-      card.querySelectorAll('[data-card-progress]').forEach(item => item.style.width = `${(episodes / cardTotal) * 100}%`);
-    });
-  }
-  updateCatalogCards();
-
-  const menuToggle = document.getElementById('menuToggle');
-  const mainNav = document.getElementById('mainNav');
-  menuToggle?.addEventListener('click', () => {
-    const open = mainNav.classList.toggle('open');
-    document.querySelector('.global-search')?.classList.toggle('open', open);
-    menuToggle.setAttribute('aria-expanded', String(open));
-    menuToggle.textContent = open ? '×' : '☰';
-  });
-
-  const search = document.getElementById('globalSearch');
-  const results = document.getElementById('searchResults');
-  const normalizeSearch = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  search?.addEventListener('input', () => {
-    const query = normalizeSearch(search.value.trim());
-    if (!query) { results.hidden = true; return; }
-    const catalog = [
-      { terms: 'a casa do dragao house of the dragon targaryen rhaenyra alicent', title: 'A Casa do Dragão', slug: 'a-casa-do-dragao', cover: 'a-casa-do-dragao-temporada-3.jpg', episodes: 22 },
-      { terms: 'friends rachel ross monica chandler joey phoebe comedia', title: 'Friends', slug: 'friends', cover: 'friends-temporada-10.jpg', episodes: 236 }
-    ];
-    const matches = catalog.filter(anime => anime.terms.includes(query));
-    results.innerHTML = matches.length
-      ? matches.map(anime => `<a class="search-result" href="${base}series/${anime.slug}.html"><img src="${base}assets/images/capas/${anime.cover}" alt=""><span><b>${anime.title}</b><small>Série • ${anime.episodes} episódios disponíveis</small></span></a>`).join('')
-      : '<div class="no-result">Nenhuma série encontrada.</div>';
-    results.hidden = false;
-  });
-  search?.addEventListener('keydown', event => {
-    if (event.key === 'Escape') { search.value = ''; results.hidden = true; search.blur(); }
-  });
-  document.addEventListener('keydown', event => {
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k' && search) { event.preventDefault(); search.focus(); }
-  });
-  document.addEventListener('click', event => {
-    if (!event.target.closest('.global-search') && results) results.hidden = true;
-  });
-
-  const catalogSearch = document.getElementById('catalogSearch');
-  const catalogEmpty = document.getElementById('catalogEmpty');
-  catalogSearch?.addEventListener('input', () => {
-    const query = normalizeSearch(catalogSearch.value.trim());
-    let visible = 0;
-    document.querySelectorAll('.catalog-series-card').forEach(card => {
-      const matches = !query || normalizeSearch(card.dataset.catalogTitle).includes(query);
-      card.classList.toggle('is-hidden', !matches);
-      if (matches) visible += 1;
-    });
-    if (catalogEmpty) catalogEmpty.hidden = visible !== 0;
-  });
-
-  if (body.dataset.page === 'series-ranking') {
-    const profiles = Object.values(getProfiles());
-    const ranking = Object.entries(animeCatalog).map(([id, anime]) => ({
-      ...anime,
-      id,
-      points: profiles.filter(profile => profile?.anime?.[id]?.status === 'assistindo').length
-    })).sort((first, second) => second.points - first.points || first.title.localeCompare(second.title, 'pt-BR'));
-    document.getElementById('seriesRankingTotal').textContent = formatNumber(ranking.reduce((total, anime) => total + anime.points, 0));
-    document.getElementById('seriesRankingList').innerHTML = ranking.map((anime, index) => `
-      <article class="leaderboard-row anime-leaderboard-row">
-        <span class="leaderboard-position">${index + 1}</span>
-        <a class="leaderboard-cover" href="series/${anime.slug}.html"><img src="${anime.cover}" alt="Capa de ${anime.title}"></a>
-        <div class="leaderboard-name"><span>SÉRIE • ${anime.totalEpisodes} EPISÓDIOS DISPONÍVEIS</span><h3><a href="series/${anime.slug}.html">${anime.title}</a></h3><small>${anime.points === 1 ? '1 usuário está assistindo' : `${anime.points} usuários estão assistindo`}</small></div>
-        <div class="leaderboard-value"><strong>${formatNumber(anime.points)}</strong><span>${anime.points === 1 ? 'PONTO' : 'PONTOS'}</span></div>
-      </article>
-    `).join('');
-  }
-
-  if (body.dataset.page === 'user-ranking') {
-    const currentUsername = getCurrentProfile()?.username || '';
-    const ranking = Object.values(getProfiles()).map(profile => {
-      const experience = profileExperience(profile);
-      return {
-        username: profile.username,
-        displayName: profile.displayName || profile.username,
-        photoURL: profile.photoURL || 'assets/images/perfil/avatar.png',
-        experience,
-        episodes: experience / experiencePerEpisode,
-        level: levelFromExperience(experience).level
-      };
-    }).sort((first, second) => second.experience - first.experience || first.username.localeCompare(second.username, 'pt-BR'));
-    document.getElementById('userRankingTotal').textContent = formatNumber(ranking.length);
-    const list = document.getElementById('userRankingList');
-    if (!ranking.length) {
-      list.innerHTML = '<div class="leaderboard-empty"><span>♙</span><h3>Nenhum usuário cadastrado</h3><p>O ranking aparecerá quando a primeira conta for criada.</p><a class="button button-primary" href="login.html">Criar conta</a></div>';
-    } else {
-      list.innerHTML = ranking.map((user, index) => `
-        <article class="leaderboard-row user-leaderboard-row${user.username === currentUsername ? ' is-current-user' : ''}">
-          <span class="leaderboard-position">${index + 1}</span>
-          <div class="leaderboard-avatar"><img src="${escapeHtml(user.photoURL)}" alt="Foto de ${escapeHtml(user.displayName)}"></div>
-          <div class="leaderboard-name"><span>${user.username === currentUsername ? 'VOCÊ • ' : ''}LEVEL ${user.level}</span><h3>${escapeHtml(user.displayName)}</h3><small>@${escapeHtml(user.username)} • ${formatNumber(user.episodes)} episódios assistidos</small></div>
-          <div class="leaderboard-value"><strong>${formatNumber(user.experience)}</strong><span>XP</span></div>
-        </article>
-      `).join('');
-    }
-  }
-
-  const loginForm = document.getElementById('loginForm');
-  document.getElementById('showPassword')?.addEventListener('click', event => {
-    const field = document.getElementById('password');
-    field.type = field.type === 'password' ? 'text' : 'password';
-    event.currentTarget.textContent = field.type === 'password' ? '◉' : '◎';
-  });
-  loginForm?.addEventListener('submit', async event => {
-    event.preventDefault();
-    const usernameInput = document.getElementById('username');
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const username = usernameInput.value.trim();
-    const error = document.getElementById('loginError');
-    const submit = loginForm.querySelector('[type="submit"]');
-    if (!firebaseAuth) { error.textContent = 'Não foi possível conectar ao Firebase. Verifique sua internet.'; return; }
-    if (username.length < 3 || password.length < 6) { error.textContent = 'Use pelo menos 3 caracteres no usuário e 6 na senha.'; return; }
-    error.textContent = '';
-    submit.disabled = true;
-    submit.textContent = 'Conectando...';
-    try {
-      const methods = await firebaseAuth.fetchSignInMethodsForEmail(email);
-      let credential;
-      if (methods.length) credential = await firebaseAuth.signInWithEmailAndPassword(email, password);
-      else {
-        credential = await firebaseAuth.createUserWithEmailAndPassword(email, password);
-        await credential.user.updateProfile({ displayName: username });
-      }
-      window.location.href = 'perfil.html';
-    } catch (loginError) {
-      const messages = {
-        'auth/invalid-email': 'Digite um endereço de e-mail válido.',
-        'auth/invalid-credential': 'E-mail ou senha incorretos.',
-        'auth/wrong-password': 'Senha incorreta.',
-        'auth/email-already-in-use': 'Este e-mail já possui uma conta.',
-        'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.',
-        'auth/too-many-requests': 'Muitas tentativas. Aguarde um pouco e tente novamente.'
-      };
-      error.textContent = messages[loginError.code] || 'Não foi possível entrar. Tente novamente.';
-      submit.disabled = false;
-      submit.textContent = 'Entrar ou criar conta';
-    }
-  });
-
-  document.getElementById('googleLogin')?.addEventListener('click', async event => {
-    const error = document.getElementById('loginError');
-    if (!firebaseAuth) { error.textContent = 'Não foi possível conectar ao Firebase.'; return; }
-    event.currentTarget.disabled = true;
-    try {
-      await firebaseAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-      window.location.href = 'perfil.html';
-    } catch (loginError) {
-      if (loginError.code !== 'auth/popup-closed-by-user') error.textContent = 'Não foi possível entrar com o Google.';
-      event.currentTarget.disabled = false;
-    }
-  });
-
-  document.querySelectorAll('.info-card dt').forEach(term => {
-    if (term.textContent.trim().toLowerCase() === 'formato') term.closest('div')?.remove();
-  });
-  if (body.dataset.page === 'season-details') {
-    document.querySelector('.detail-tabs button[data-tab="visao-geral"]')?.remove();
-    document.getElementById('visao-geral')?.remove();
-    document.querySelector('.detail-tabs button[data-tab="episodios"]')?.classList.add('active');
-    document.getElementById('episodios')?.classList.add('active');
-  }
-
-  let episodeCatalog = [
-    [
-      ['The Heirs of the Dragon', '2022-08-21', '21 ago. 2022'],
-      ['The Rogue Prince', '2022-08-28', '28 ago. 2022'],
-      ['Second of His Name', '2022-09-04', '4 set. 2022'],
-      ['King of the Narrow Sea', '2022-09-11', '11 set. 2022'],
-      ['We Light the Way', '2022-09-18', '18 set. 2022'],
-      ['The Princess and the Queen', '2022-09-25', '25 set. 2022'],
-      ['Driftmark', '2022-10-02', '2 out. 2022'],
-      ['The Lord of the Tides', '2022-10-09', '9 out. 2022'],
-      ['The Green Council', '2022-10-16', '16 out. 2022'],
-      ['The Black Queen', '2022-10-23', '23 out. 2022']
-    ],
-    [
-      ['A Son for a Son', '2024-06-16', '16 jun. 2024'],
-      ['Rhaenyra the Cruel', '2024-06-23', '23 jun. 2024'],
-      ['The Burning Mill', '2024-06-30', '30 jun. 2024'],
-      ['The Red Dragon and the Gold', '2024-07-07', '7 jul. 2024'],
-      ['Regent', '2024-07-14', '14 jul. 2024'],
-      ['Smallfolk', '2024-07-21', '21 jul. 2024'],
-      ['The Red Sowing', '2024-07-28', '28 jul. 2024'],
-      ['The Queen Who Ever Was', '2024-08-04', '4 ago. 2024']
-    ],
-    [
-      ['Salt and Sea, Fire and Blood', '2026-06-21', '21 jun. 2026'],
-      ['Queen’s Landing', '2026-06-28', '28 jun. 2026'],
-      ['Rhaenyra Triumphant', '2026-07-05', '5 jul. 2026'],
-      ['Episódio 4', '2026-07-12', '12 jul. 2026'],
-      ['Título ainda não divulgado', '2026-07-19', '19 jul. 2026'],
-      ['Título ainda não divulgado', '2026-07-26', '26 jul. 2026'],
-      ['Título ainda não divulgado', '2026-08-02', '2 ago. 2026'],
-      ['Título ainda não divulgado', '2026-08-09', '9 ago. 2026']
-    ]
   ];
 
-  let episodeSourceUrl = 'https://press.wbd.com/na/property/house-dragon/synopses';
-  let episodeSourceLabel = 'HBO / Warner Bros. Discovery';
-  if (animeId === 'friends' && body.dataset.page === 'season-details') {
-    episodeCatalog = Array.from({ length: 10 }, () => []);
-    try {
-      const response = await fetch('https://api.tvmaze.com/shows/431/episodes');
-      if (!response.ok) throw new Error(`TVMaze: ${response.status}`);
-      const allEpisodes = await response.json();
-      allEpisodes.forEach(episode => {
-        if (episode.season >= 1 && episode.season <= 10) {
-          const displayDate = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
-            .format(new Date(`${episode.airdate}T12:00:00Z`))
-            .replace('.', '');
-          episodeCatalog[episode.season - 1].push([episode.name, episode.airdate, displayDate]);
-        }
-      });
-      episodeSourceUrl = 'https://www.tvmaze.com/shows/431/friends/episodes';
-      episodeSourceLabel = 'TVMaze';
-    } catch (error) {
-      console.error('Não foi possível carregar os episódios de Friends.', error);
-    }
-  }
+  const normalize = value => value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 
-  if (body.dataset.page === 'season-details') {
-    const seasonIndex = Number(body.dataset.seasonIndex);
-    const availableEpisodes = Number(body.dataset.seasonLimit);
-    const episodePanel = document.querySelector('#episodios .content-card');
-    const episodes = episodeCatalog[seasonIndex] || [];
-    if (episodePanel && episodes.length) {
-      episodePanel.innerHTML = `
-        <div class="content-card-heading episode-list-heading">
-          <div><span class="section-kicker">TEMPORADA ${seasonIndex + 1}</span><h2>Lista de episódios</h2></div>
-          <div class="episode-list-total"><strong data-episode-list-progress>0</strong><span>/${availableEpisodes} assistidos</span></div>
-        </div>
-        <div class="episode-list-progress"><span data-episode-list-progress-bar></span></div>
-        <div class="episode-checklist">
-          ${episodes.map(([title, date, displayDate], episodeIndex) => {
-            const number = episodeIndex + 1;
-            const available = number <= availableEpisodes;
-            return `<label class="episode-check-item${available ? '' : ' is-upcoming'}">
-              <input class="episode-watch-checkbox" type="checkbox" data-season-index="${seasonIndex}" data-episode-number="${number}" ${available ? '' : 'disabled'}>
-              <span class="episode-checkmark" aria-hidden="true"></span>
-              <span class="episode-number">EP ${String(number).padStart(2, '0')}</span>
-              <span class="episode-copy"><strong>${escapeHtml(title)}</strong><small>${available ? 'Lançado em' : 'Estreia oficial'} <time datetime="${date}">${displayDate}</time></small></span>
-              <span class="episode-status">${available ? 'Marcar como assistido' : 'Em breve'}</span>
-            </label>`;
-          }).join('')}
-        </div>
-        <p class="episode-source">Datas de exibição consultadas no <a href="${episodeSourceUrl}" target="_blank" rel="noopener">${episodeSourceLabel}</a>. Cada episódio marcado concede ${experiencePerEpisode} XP.</p>
-      `;
-    }
-  }
+  const renderResults = query => {
+    if (!searchResults) return;
+    const normalized = normalize(query.trim());
+    const matches = normalized
+      ? catalog.filter(item => item.terms.includes(normalized) || normalize(item.title).includes(normalized))
+      : catalog;
 
-  const getAnimeEntry = (profile, id = animeId) => profile?.anime?.[id] || { status: '', score: '', favorite: false, episodes: 0 };
-  const getSeasonValues = entry => {
-    if (!seasonEpisodeLimits.length) return [];
-    if (Array.isArray(entry?.seasons)) {
-      return seasonEpisodeLimits.map((limit, index) => Math.min(limit, Math.max(0, Number(entry.seasons[index]) || 0)));
-    }
-    let remaining = Math.min(totalEpisodes, Math.max(0, Number(entry?.episodes) || 0));
-    return seasonEpisodeLimits.map(limit => {
-      const watched = Math.min(limit, remaining);
-      remaining -= watched;
-      return watched;
-    });
+    searchResults.innerHTML = matches.length
+      ? matches.map(item => `
+        <a class="search-result" href="${item.href}">
+          <img src="${item.image}" alt="">
+          <span><strong>${item.title}</strong><small>${item.subtitle}</small></span>
+          <b aria-hidden="true">↗</b>
+        </a>`).join('')
+      : '<p class="search-empty">Nenhum livro ou autor encontrado no acervo.</p>';
   };
-  const getSeasonWatched = (entry, index) => {
-    const limit = seasonEpisodeLimits[index] || 0;
-    const stored = entry?.watchedEpisodes?.[index];
-    if (Array.isArray(stored)) {
-      return [...new Set(stored.map(Number).filter(number => number >= 1 && number <= limit))].sort((a, b) => a - b);
-    }
-    const count = getSeasonValues(entry)[index] || 0;
-    return Array.from({ length: count }, (_, episodeIndex) => episodeIndex + 1);
-  };
-  const statusSelect = document.getElementById('statusSelect');
-  const scoreSelect = document.getElementById('scoreSelect');
-  const listButton = document.getElementById('listButton');
-  const favoriteButton = document.getElementById('favoriteButton');
-  const personalVote = document.getElementById('personalVoteValue');
-  const voteAction = document.getElementById('voteAction');
-  const episodeInput = document.getElementById('episodeInput');
-  const episodePlus = document.getElementById('episodePlus');
-  const episodeProgressLabel = document.getElementById('episodeProgressLabel');
-  const episodeProgressBar = document.getElementById('episodeProgressBar');
-  if (voteAction && currentProfile) voteAction.textContent = 'Alterar meu voto';
 
-  function updateAnimeControls() {
-    const profile = getCurrentProfile();
-    const entry = getAnimeEntry(profile);
-    const episodes = Math.min(totalEpisodes, Math.max(0, Number(entry.episodes) || 0));
-    const effectiveStatus = episodes >= totalEpisodes && !isAiring ? 'concluido' : entry.status || '';
-    if (statusSelect) statusSelect.value = effectiveStatus;
-    if (scoreSelect) scoreSelect.value = entry.score || '';
-    if (personalVote) personalVote.textContent = entry.score || '—';
-    if (episodeInput) episodeInput.value = String(episodes);
-    if (episodeProgressLabel) episodeProgressLabel.textContent = String(episodes);
-    if (episodeProgressBar) episodeProgressBar.style.width = `${(episodes / totalEpisodes) * 100}%`;
-    if (episodePlus) episodePlus.disabled = episodes >= totalEpisodes;
-    if (seasonEpisodeLimits.length) {
-      const seasons = getSeasonValues(entry);
-      document.querySelectorAll('.season-episode-input').forEach(input => {
-        const index = Number(input.dataset.seasonIndex);
-        input.value = String(seasons[index] || 0);
-      });
-      document.querySelectorAll('.season-episode-plus').forEach(button => {
-        const index = Number(button.dataset.seasonIndex);
-        button.disabled = (seasons[index] || 0) >= seasonEpisodeLimits[index];
-      });
-      seasonEpisodeLimits.forEach((limit, index) => {
-        const watched = seasons[index] || 0;
-        document.querySelectorAll(`[data-season-progress-label="${index}"]`).forEach(item => item.textContent = String(watched));
-        document.querySelectorAll(`[data-season-progress-bar="${index}"]`).forEach(item => item.style.width = `${(watched / limit) * 100}%`);
-      });
-      document.querySelectorAll('.episode-watch-checkbox').forEach(input => {
-        const index = Number(input.dataset.seasonIndex);
-        input.checked = getSeasonWatched(entry, index).includes(Number(input.dataset.episodeNumber));
-      });
-      const pageSeasonIndex = Number(body.dataset.seasonIndex);
-      const pageSeasonLimit = Number(body.dataset.seasonLimit);
-      if (Number.isInteger(pageSeasonIndex) && pageSeasonLimit > 0) {
-        const watched = getSeasonWatched(entry, pageSeasonIndex).length;
-        document.querySelectorAll('[data-episode-list-progress]').forEach(item => item.textContent = String(watched));
-        document.querySelectorAll('[data-episode-list-progress-bar]').forEach(item => item.style.width = `${(watched / pageSeasonLimit) * 100}%`);
-      }
-    }
-    document.querySelectorAll('[data-home-episodes]').forEach(item => item.textContent = String(episodes));
-    document.querySelectorAll('[data-home-progress]').forEach(item => item.style.width = `${(episodes / totalEpisodes) * 100}%`);
-    if (listButton) listButton.innerHTML = effectiveStatus ? '<span>✓</span> Na minha lista' : '<span>＋</span> Adicionar à minha lista';
-    if (favoriteButton) {
-      favoriteButton.classList.toggle('active', Boolean(entry.favorite));
-      favoriteButton.innerHTML = entry.favorite ? '<span>♥</span> Favoritado' : '<span>♡</span> Favoritar';
-    }
-  }
-  updateAnimeControls();
+  menuToggle?.addEventListener('click', () => {
+    const isOpen = menu?.classList.toggle('open');
+    document.body.classList.toggle('menu-open', Boolean(isOpen));
+    menuToggle.setAttribute('aria-expanded', String(Boolean(isOpen)));
+    menuToggle.textContent = isOpen ? '×' : '☰';
+    menuToggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+  });
 
-  function updateEntry(change) {
-    if (!requireLogin()) return false;
-    const profile = getCurrentProfile();
-    profile.anime ||= {};
-    profile.anime[animeId] = { ...getAnimeEntry(profile), ...change, title: animeTitle, slug: animeSlug, cover: animeCover, totalEpisodes };
-    saveProfile(profile);
-    updateAnimeControls();
-    updateSiteMetrics();
-    updateCatalogCards();
-    return true;
-  }
-
-  document.querySelectorAll('.quick-add').forEach(button => button.addEventListener('click', () => {
-    if (updateEntry({ status: 'planejo' })) { button.innerHTML = '<span>✓</span> Adicionada à lista'; showToast(`${animeTitle} foi adicionada à sua lista`); }
+  menu?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+    menu.classList.remove('open');
+    document.body.classList.remove('menu-open');
+    menuToggle?.setAttribute('aria-expanded', 'false');
+    if (menuToggle) menuToggle.textContent = '☰';
   }));
-  listButton?.addEventListener('click', () => {
-    const active = Boolean(getAnimeEntry(getCurrentProfile()).status);
-    if (updateEntry({ status: active ? '' : 'planejo' })) showToast(active ? 'Série removida da sua lista' : 'Série adicionada à sua lista');
-  });
-  statusSelect?.addEventListener('change', () => {
-    const selected = statusSelect.value;
-    if (updateEntry({ status: selected })) showToast(selected ? 'Status atualizado' : 'Série removida da sua lista');
-  });
-  scoreSelect?.addEventListener('change', () => {
-    const score = scoreSelect.value;
-    if (updateEntry({ score })) showToast(score ? `Seu voto: ${score}/10` : 'Voto removido');
-  });
-  episodeInput?.addEventListener('change', () => {
-    const episodes = Math.min(totalEpisodes, Math.max(0, Math.floor(Number(episodeInput.value) || 0)));
-    const current = getAnimeEntry(getCurrentProfile());
-    const previousEpisodes = Math.min(totalEpisodes, Math.max(0, Number(current.episodes) || 0));
-    const status = episodes === totalEpisodes && !isAiring ? 'concluido' : episodes > 0 && (!current.status || current.status === 'planejo' || current.status === 'concluido') ? 'assistindo' : current.status;
-    const gainedExperience = (episodes - previousEpisodes) * experiencePerEpisode;
-    if (updateEntry({ episodes, status })) showToast(gainedExperience > 0 ? `Progresso: ${episodes}/${totalEpisodes} • +${gainedExperience} XP` : `Progresso atualizado: ${episodes}/${totalEpisodes}`);
-  });
-  episodeInput?.addEventListener('keydown', event => {
-    if (event.key === 'Enter') episodeInput.blur();
-  });
-  episodePlus?.addEventListener('click', () => {
-    if (!requireLogin('Entre para salvar seu progresso.')) return;
-    const current = getAnimeEntry(getCurrentProfile());
-    const episodes = Math.min(totalEpisodes, (Number(current.episodes) || 0) + 1);
-    const status = episodes === totalEpisodes && !isAiring ? 'concluido' : 'assistindo';
-    if (updateEntry({ episodes, status })) showToast(`Episódio ${episodes} marcado • +${experiencePerEpisode} XP`);
-  });
-  function updateSeasonProgress(index, requestedEpisodes) {
-    if (!requireLogin('Entre para salvar seu progresso.')) {
-      updateAnimeControls();
-      return;
-    }
-    const current = getAnimeEntry(getCurrentProfile());
-    const seasons = getSeasonValues(current);
-    const previousTotal = seasons.reduce((sum, value) => sum + value, 0);
-    seasons[index] = Math.min(seasonEpisodeLimits[index], Math.max(0, Math.floor(Number(requestedEpisodes) || 0)));
-    const episodes = seasons.reduce((sum, value) => sum + value, 0);
-    const gainedExperience = (episodes - previousTotal) * experiencePerEpisode;
-    const status = episodes >= totalEpisodes && !isAiring ? 'concluido' : episodes > 0 && (!current.status || current.status === 'planejo' || current.status === 'concluido') ? 'assistindo' : current.status;
-    if (updateEntry({ seasons, episodes, status })) {
-      showToast(gainedExperience > 0 ? `Temporada ${index + 1}: ${seasons[index]}/${seasonEpisodeLimits[index]} • +${gainedExperience} XP` : `Progresso da temporada ${index + 1} atualizado`);
-    }
-  }
-  document.querySelectorAll('.season-episode-input').forEach(input => {
-    input.addEventListener('change', () => updateSeasonProgress(Number(input.dataset.seasonIndex), input.value));
-    input.addEventListener('keydown', event => {
-      if (event.key === 'Enter') input.blur();
-    });
-  });
-  document.querySelectorAll('.season-episode-plus').forEach(button => {
-    button.addEventListener('click', () => {
-      const index = Number(button.dataset.seasonIndex);
-      const current = getAnimeEntry(getCurrentProfile());
-      const seasons = getSeasonValues(current);
-      updateSeasonProgress(index, (seasons[index] || 0) + 1);
-    });
-  });
-  document.querySelectorAll('.episode-watch-checkbox').forEach(input => {
-    input.addEventListener('change', () => {
-      if (!requireLogin('Entre para salvar os episódios assistidos.')) {
-        updateAnimeControls();
-        return;
-      }
-      const index = Number(input.dataset.seasonIndex);
-      const episodeNumber = Number(input.dataset.episodeNumber);
-      const current = getAnimeEntry(getCurrentProfile());
-      const watched = new Set(getSeasonWatched(current, index));
-      if (input.checked) watched.add(episodeNumber);
-      else watched.delete(episodeNumber);
-      const watchedEpisodes = { ...(current.watchedEpisodes || {}), [index]: [...watched].sort((a, b) => a - b) };
-      const seasons = getSeasonValues(current);
-      const previousTotal = seasons.reduce((sum, value) => sum + value, 0);
-      seasons[index] = watched.size;
-      const episodes = seasons.reduce((sum, value) => sum + value, 0);
-      const status = episodes > 0 && (!current.status || current.status === 'planejo' || current.status === 'concluido') ? 'assistindo' : current.status;
-      if (updateEntry({ watchedEpisodes, seasons, episodes, status })) {
-        const difference = episodes - previousTotal;
-        showToast(difference > 0 ? `Episódio ${episodeNumber} marcado • +${experiencePerEpisode} XP` : `Episódio ${episodeNumber} desmarcado`);
-      }
-    });
-  });
-  favoriteButton?.addEventListener('click', () => {
-    const next = !getAnimeEntry(getCurrentProfile()).favorite;
-    if (updateEntry({ favorite: next })) showToast(next ? 'Adicionado aos favoritos' : 'Removido dos favoritos');
-  });
-  voteAction?.addEventListener('click', () => {
-    if (!requireLogin('Entre para registrar seu voto.')) return;
-    scoreSelect?.focus();
-    scoreSelect?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  document.querySelector('[data-open-search]')?.addEventListener('click', () => {
+    renderResults('');
+    searchDialog?.showModal();
+    window.setTimeout(() => searchInput?.focus(), 50);
   });
 
-  const activateDetailTab = tabName => {
-    document.querySelectorAll('.detail-tabs button').forEach(item => item.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
-    document.querySelector(`.detail-tabs button[data-tab="${tabName}"]`)?.classList.add('active');
-    document.getElementById(tabName)?.classList.add('active');
-  };
-  document.querySelectorAll('.detail-tabs button').forEach(button => button.addEventListener('click', () => activateDetailTab(button.dataset.tab)));
-  document.querySelectorAll('a[href="#episodios"]').forEach(link => link.addEventListener('click', event => {
-    event.preventDefault();
-    activateDetailTab('episodios');
-    document.querySelector('.detail-tabs')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }));
-  if (window.location.hash === '#episodios') activateDetailTab('episodios');
+  searchInput?.addEventListener('input', () => renderResults(searchInput.value));
 
-  if (body.dataset.page === 'profile') {
-    const profile = getCurrentProfile();
-    if (!profile) { window.location.replace('login.html'); return; }
-    if (!profile.joinedAt) {
-      profile.joinedAt = new Date().toISOString();
-      saveProfile(profile);
-    }
-    document.querySelectorAll('[data-profile-name]').forEach(item => item.textContent = profile.displayName);
-    document.querySelectorAll('[data-profile-handle]').forEach(item => item.textContent = profile.username);
-    document.querySelectorAll('[data-profile-photo]').forEach(item => {
-      item.src = profile.photoURL || 'assets/images/perfil/avatar.png';
-      item.alt = `Foto de ${profile.displayName}`;
-    });
-    document.getElementById('profileJoinedAt').textContent = new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    }).format(new Date(profile.joinedAt));
-    document.getElementById('profileTheme').textContent = 'Escuro';
-    const entries = Object.entries(profile.anime || {}).filter(([id, entry]) => animeCatalog[id] && (entry.status || entry.score || entry.favorite || entry.episodes));
-    document.getElementById('profileListCount').textContent = entries.filter(([, entry]) => entry.status).length;
-    document.getElementById('profileWatchingCount').textContent = entries.filter(([id, entry]) => entry.status === 'assistindo' && (airingAnime[id] || safeEpisodes(id, entry) < (animeEpisodeLimits[id] || Number(entry.totalEpisodes) || Infinity))).length;
-    document.getElementById('profileCompletedCount').textContent = entries.filter(([id, entry]) => entry.status === 'concluido' || (!airingAnime[id] && safeEpisodes(id, entry) >= (animeEpisodeLimits[id] || Number(entry.totalEpisodes) || Infinity))).length;
-    document.getElementById('profileVoteCount').textContent = entries.filter(([, entry]) => entry.score).length;
-    const totalExperience = profileExperience(profile);
-    const levelData = levelFromExperience(totalExperience);
-    document.getElementById('profileLevel').textContent = String(levelData.level);
-    document.getElementById('profileLevelAside').textContent = String(levelData.level);
-    document.getElementById('profileXpTotal').textContent = `${formatNumber(totalExperience)} XP`;
-    document.getElementById('profileXpAside').textContent = `${formatNumber(totalExperience)} XP`;
-    document.getElementById('profileXpNext').textContent = `${formatNumber(levelData.current)} / ${formatNumber(levelData.needed)} XP`;
-    document.getElementById('profileXpBar').style.width = `${levelData.progress}%`;
-    const list = document.getElementById('profileAnimeList');
-    if (!entries.length) {
-      list.innerHTML = '<div class="empty-list"><span>＋</span><h3>Sua lista está vazia</h3><p>Adicione uma série e registre seu primeiro voto.</p><a class="button button-primary" href="series.html">Explorar séries</a></div>';
-    } else {
-      list.innerHTML = entries.map(([id, entry]) => {
-        const fallback = animeCatalog[id] || { title: entry.title || id, slug: entry.slug || id, cover: entry.cover || 'assets/images/capas/a-casa-do-dragao-temporada-3.jpg', totalEpisodes: Number(entry.totalEpisodes) || 0 };
-        const title = fallback.title;
-        const slug = fallback.slug;
-        const cover = fallback.cover;
-        const total = fallback.totalEpisodes;
-        const episodes = safeEpisodes(id, entry);
-        const storedStatus = episodes >= total && !airingAnime[id] ? 'concluido' : entry.status;
-        const status = storedStatus ? storedStatus.replace('planejo','Planejo assistir').replace('assistindo','Assistindo').replace('concluido','Concluído').replace('pausado','Pausado').replace('abandonado','Abandonado') : 'Sem status';
-        return `<article class="profile-anime-card"><img src="${cover}" alt="Capa de ${title}"><div><span class="card-type">SÉRIE • ${total} EPISÓDIOS DISPONÍVEIS</span><h3><a href="series/${slug}.html">${title}</a></h3><p>${status} • ${episodes}/${total} vistos <span class="anime-xp">+${episodes * experiencePerEpisode} XP</span></p></div><div class="profile-score"><span>SEU VOTO</span><strong>${entry.score || '—'}${entry.score ? '<small>/10</small>' : ''}</strong></div></article>`;
-      }).join('');
-    }
-  }
+  searchDialog?.addEventListener('click', event => {
+    if (event.target === searchDialog) searchDialog.close();
+  });
 
-  const nicknameModal = document.getElementById('nicknameModal');
-  const nicknameForm = document.getElementById('nicknameForm');
-  const openNicknameModal = () => {
-    if (!nicknameModal || !firebaseUser) return;
-    nicknameModal.hidden = false;
-    body.classList.add('nickname-required');
-    const nicknameInput = document.getElementById('nickname');
-    nicknameInput.value = getCurrentProfile()?.username === 'usuario' ? '' : getCurrentProfile()?.username || '';
-    setTimeout(() => nicknameInput.focus(), 50);
-  };
-  if (requiresNickname) openNicknameModal();
-  document.getElementById('editNicknameButton')?.addEventListener('click', openNicknameModal);
-  nicknameForm?.addEventListener('submit', async event => {
-    event.preventDefault();
-    const nicknameInput = document.getElementById('nickname');
-    const nicknameError = document.getElementById('nicknameError');
-    const nickname = nicknameInput.value.trim();
-    if (!/^[A-Za-zÀ-ÿ0-9_.-]{3,24}$/.test(nickname)) {
-      nicknameError.textContent = 'Use de 3 a 24 caracteres: letras, números, ponto, hífen ou underline.';
-      return;
+  document.addEventListener('keydown', event => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      renderResults('');
+      searchDialog?.showModal();
+      window.setTimeout(() => searchInput?.focus(), 50);
     }
-    const alreadyUsed = Object.values(getProfiles()).some(profile =>
-      profile.uid !== firebaseUser.uid && profile.username?.toLowerCase() === nickname.toLowerCase()
-    );
-    if (alreadyUsed) {
-      nicknameError.textContent = 'Este nick já está sendo usado.';
-      return;
-    }
-    const profile = getCurrentProfile();
-    profile.username = nickname;
-    profile.displayName = nickname;
-    event.submitter.disabled = true;
-    event.submitter.textContent = 'Salvando...';
+  });
+
+  document.querySelector('[data-copy-isbn]')?.addEventListener('click', async event => {
+    const button = event.currentTarget;
+    const isbn = button.dataset.copyIsbn;
     try {
-      await firebaseUser.updateProfile({ displayName: nickname });
-      cacheProfile(profile);
-      await syncProfile(profile);
-      window.location.reload();
-    } catch (error) {
-      nicknameError.textContent = 'Não foi possível salvar o nick. Tente novamente.';
-      event.submitter.disabled = false;
-      event.submitter.textContent = 'Começar minha jornada';
+      await navigator.clipboard.writeText(isbn);
+      button.textContent = 'ISBN copiado';
+    } catch {
+      button.textContent = `ISBN: ${isbn}`;
     }
+    window.setTimeout(() => { button.textContent = 'Copiar ISBN'; }, 1800);
   });
 
-  document.getElementById('logoutButton')?.addEventListener('click', async () => {
-    if (firebaseAuth) await firebaseAuth.signOut();
-    localStorage.removeItem(keys.current);
-    window.location.href = 'login.html';
+  document.querySelectorAll('[data-current-year]').forEach(item => {
+    item.textContent = String(new Date().getFullYear());
   });
 })();

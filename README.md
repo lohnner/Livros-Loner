@@ -1,20 +1,20 @@
-# Central das Séries
+# Livros Loner
 
-Acervo de seriados em português com páginas de séries e temporadas, calendário de lançamentos, lista pessoal, progresso, avaliações, XP e rankings.
+Acervo editorial de livros e autores, publicado em:
 
-## Estrutura
+https://lohnner.github.io/Livros-Loner/index.html
 
-- `index.html` — página inicial
-- `series.html` — catálogo de séries
-- `series/a-casa-do-dragao.html` — página principal de A Casa do Dragão
-- `series/a-casa-do-dragao-temporada-1.html` — primeira temporada
-- `series/a-casa-do-dragao-temporada-2.html` — segunda temporada
-- `series/a-casa-do-dragao-temporada-3.html` — terceira temporada
-- `series/friends.html` — página principal de Friends
-- `series/friends-temporada-1.html` até `friends-temporada-10.html` — dez temporadas e 236 episódios
-- `calendario.html` — próximos episódios
-- `perfil.html` — perfil, lista e progresso
-- `ranking.html` — ranking de séries
-- `ranking-usuarios.html` — ranking da comunidade
+## Conteúdo inicial
 
-Contas, listas, votos, progresso, XP e rankings são sincronizados pelo Firebase. Cada episódio assistido concede 22 XP.
+- `index.html` — página inicial do acervo
+- `livros/a-armadilha-do-paraiso.html` — ficha, sinopse e contexto do primeiro volume da Trilogia Han Solo
+- `autores/a-c-crispin.html` — biografia, trajetória e bibliografia selecionada de A. C. Crispin
+
+## Imagens e fontes
+
+- Capa de *A Armadilha do Paraíso*: Open Library, registro OL29157153M
+- Retrato de A. C. Crispin: AP, reproduzido pela India Today
+- Dados bibliográficos: Penguin Random House, Open Library e edição brasileira da Aleph
+- Biografia: SFWA, Writer Beware, Penguin Random House e blog oficial de A. C. Crispin
+
+O projeto utiliza HTML, CSS e JavaScript sem dependências de build.
