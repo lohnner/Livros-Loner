@@ -10,6 +10,7 @@ https://lohnner.github.io/Livros-Loner/
 - `livros/index.html` — catálogo de livros com busca, alfabeto e filtros avançados
 - `livros/a-armadilha-do-paraiso.html` — página do livro
 - `livros/dawn-of-the-jedi-into-the-void.html` — página do livro
+- outras 10 páginas individuais de livros de A. C. Crispin e Tim Lebbon
 - `autores/index.html` — catálogo de autores com busca, alfabeto e filtros avançados
 - `autores/a-c-crispin.html` — página da autora e seus livros
 - `autores/tim-lebbon.html` — página do autor e seus livros
