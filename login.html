@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Entre ou crie sua conta no Livros Loner para salvar leituras e ganhar XP.">
+  <meta name="theme-color" content="#1b1e1a">
+  <title>Entrar — Livros Loner</title>
+  <link rel="stylesheet" href="assets/css/style.css?v=livros-loner-3">
+  <script src="assets/js/app.js?v=livros-loner-3" defer></script>
+</head>
+<body data-root="" data-page="login">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header">
+    <div class="header-inner shell">
+      <a class="brand" href="index.html" aria-label="Livros Loner — início">
+        <span class="brand-mark" aria-hidden="true">LL</span>
+        <strong>Livros Loner</strong>
+      </a>
+      <nav class="main-nav" id="mainNav" aria-label="Navegação principal">
+        <a href="index.html">Início</a>
+        <a href="livros/index.html">Livros</a>
+        <a href="autores/index.html">Autores</a>
+      </nav>
+      <div class="account-nav">
+        <a class="login-link auth-guest" href="login.html">Entrar</a>
+        <a class="user-pill auth-user" href="perfil.html" aria-label="Abrir meu perfil">
+          <span class="user-initials" data-user-initials>L</span>
+          <span data-header-level>Nível 1</span>
+        </a>
+      </div>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menu">☰</button>
+    </div>
+  </header>
+
+  <main id="conteudo" class="auth-page shell">
+    <section class="auth-card" aria-labelledby="authTitle">
+      <span class="kicker">Sua conta</span>
+      <h1 id="authTitle">Entre e continue lendo.</h1>
+      <p>Salve seu progresso e ganhe 1 XP por cada página lida.</p>
+
+      <div class="auth-tabs" role="tablist" aria-label="Escolha como acessar">
+        <button class="active" type="button" role="tab" data-auth-mode="login">Já tenho conta</button>
+        <button type="button" role="tab" data-auth-mode="create">Criar conta</button>
+      </div>
+
+      <form class="auth-form" data-auth-form>
+        <div class="auth-field" data-name-field hidden>
+          <label for="displayName">Seu nome</label>
+          <input id="displayName" name="displayName" type="text" autocomplete="name" maxlength="50">
+        </div>
+        <div class="auth-field">
+          <label for="email">E-mail</label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="auth-field">
+          <label for="password">Senha</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" minlength="6" required>
+        </div>
+        <button class="auth-submit" type="submit" data-auth-submit>Entrar com e-mail</button>
+      </form>
+
+      <div class="auth-separator">ou</div>
+      <button class="google-button" type="button" data-google-login>Continuar com Google</button>
+      <p class="auth-error" data-auth-error aria-live="polite"></p>
+      <p class="auth-note">Seu progresso fica ligado à sua conta.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner shell">
+      <span>Livros Loner</span>
+      <small>© <span data-current-year>2026</span></small>
+    </div>
+  </footer>
+</body>
+</html>

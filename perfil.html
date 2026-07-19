@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Perfil de leitura, livros, XP e nível no Livros Loner.">
+  <meta name="theme-color" content="#1b1e1a">
+  <title>Meu perfil — Livros Loner</title>
+  <link rel="stylesheet" href="assets/css/style.css?v=livros-loner-3">
+  <script src="assets/js/app.js?v=livros-loner-3" defer></script>
+</head>
+<body data-root="" data-page="profile">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header">
+    <div class="header-inner shell">
+      <a class="brand" href="index.html" aria-label="Livros Loner — início">
+        <span class="brand-mark" aria-hidden="true">LL</span>
+        <strong>Livros Loner</strong>
+      </a>
+      <nav class="main-nav" id="mainNav" aria-label="Navegação principal">
+        <a href="index.html">Início</a>
+        <a href="livros/index.html">Livros</a>
+        <a href="autores/index.html">Autores</a>
+      </nav>
+      <div class="account-nav">
+        <a class="login-link auth-guest" href="login.html">Entrar</a>
+        <a class="user-pill auth-user" href="perfil.html" aria-label="Abrir meu perfil">
+          <span class="user-initials" data-user-initials>L</span>
+          <span data-header-level>Nível 1</span>
+        </a>
+      </div>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menu">☰</button>
+    </div>
+  </header>
+
+  <main id="conteudo" class="profile-page shell">
+    <div class="breadcrumbs"><a href="index.html">Início</a><i>›</i><span>Meu perfil</span></div>
+
+    <section class="profile-overview" aria-labelledby="profileName">
+      <div class="profile-avatar" data-profile-initials>L</div>
+      <div class="profile-identity">
+        <span class="kicker">Leitor</span>
+        <h1 id="profileName" data-profile-name>Carregando…</h1>
+        <p data-profile-email></p>
+      </div>
+      <div class="level-badge">
+        <small>Nível</small>
+        <strong data-profile-level>1</strong>
+      </div>
+    </section>
+
+    <section class="level-panel" aria-labelledby="levelTitle">
+      <div class="level-copy">
+        <div>
+          <span class="kicker">Experiência</span>
+          <h2 id="levelTitle" data-profile-xp>0 XP total</h2>
+        </div>
+        <span data-level-copy>0 de 100 XP para o próximo nível</span>
+      </div>
+      <div class="level-bar" aria-hidden="true"><span data-level-progress></span></div>
+    </section>
+
+    <section class="profile-library" aria-labelledby="libraryTitle">
+      <span class="kicker">Minha estante</span>
+      <h2 id="libraryTitle">Livros e progresso</h2>
+      <div data-profile-books>
+        <div class="empty-profile">Carregando sua estante…</div>
+      </div>
+      <button class="logout-button" type="button" data-logout>Sair da conta</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner shell">
+      <span>Livros Loner</span>
+      <small>© <span data-current-year>2026</span></small>
+    </div>
+  </footer>
+</body>
+</html>

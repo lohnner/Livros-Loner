@@ -11,8 +11,8 @@
   <meta property="og:url" content="https://lohnner.github.io/Livros-Loner/livros/a-armadilha-do-paraiso.html">
   <meta property="og:image" content="https://lohnner.github.io/Livros-Loner/assets/images/livros/a-armadilha-do-paraiso.jpg">
   <title>A Armadilha do Paraíso — Livros Loner</title>
-  <link rel="stylesheet" href="../assets/css/style.css?v=livros-loner-2">
-  <script src="../assets/js/app.js?v=livros-loner-2" defer></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=livros-loner-3">
+  <script src="../assets/js/app.js?v=livros-loner-3" defer></script>
 </head>
 <body data-root="../">
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -24,6 +24,13 @@
         <a class="active" href="index.html">Livros</a>
         <a href="../autores/index.html">Autores</a>
       </nav>
+      <div class="account-nav">
+        <a class="login-link auth-guest" href="../login.html?return=livros/a-armadilha-do-paraiso.html">Entrar</a>
+        <a class="user-pill auth-user" href="../perfil.html" aria-label="Abrir meu perfil">
+          <span class="user-initials" data-user-initials>L</span>
+          <span data-header-level>Nível 1</span>
+        </a>
+      </div>
       <button class="menu-toggle" type="button" data-menu-toggle aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menu">☰</button>
     </div>
   </header>
@@ -43,6 +50,41 @@
           <img src="../assets/images/autores/a-c-crispin.jpg" alt="" width="38" height="38">
           <span><small>Autora</small><strong>A. C. Crispin</strong></span>
         </a>
+      </div>
+    </section>
+
+    <section class="reading-tracker" data-reading-tracker data-book-id="a-armadilha-do-paraiso" data-total-pages="356" aria-labelledby="readingTrackerTitle">
+      <div class="tracker-intro">
+        <span class="kicker">Sua leitura</span>
+        <h2 id="readingTrackerTitle">Registre seu progresso</h2>
+        <p>1 página lida = 1 XP · níveis sem limite</p>
+      </div>
+      <div class="tracker-guest auth-guest">
+        <p>Entre para salvar o livro e ganhar XP.</p>
+        <a class="button" href="../login.html?return=livros/a-armadilha-do-paraiso.html">Entrar</a>
+      </div>
+      <div class="tracker-user auth-user">
+        <div class="tracker-field">
+          <label for="readingStatus">Status</label>
+          <select id="readingStatus" data-reading-status>
+            <option value="">Selecionar</option>
+            <option value="owned">Tenho o livro</option>
+            <option value="reading">Estou lendo</option>
+            <option value="want">Quero ler</option>
+            <option value="finished">Finalizado</option>
+            <option value="abandoned">Abandonado</option>
+          </select>
+        </div>
+        <div class="tracker-field">
+          <label for="pagesRead">Páginas lidas</label>
+          <input id="pagesRead" type="number" min="0" max="356" value="0" inputmode="numeric" data-pages-read>
+        </div>
+        <button class="tracker-save" type="button" data-save-progress>Salvar</button>
+        <div class="tracker-progress">
+          <div class="tracker-progress-bar" aria-hidden="true"><span data-reading-bar></span></div>
+          <small data-reading-label>0 de 356 páginas · 0 XP</small>
+        </div>
+        <p class="tracker-message" data-tracker-message aria-live="polite"></p>
       </div>
     </section>
 
