@@ -339,9 +339,9 @@
       currentProfile.books = {
         ...(currentProfile.books || {}),
         [id]: {
-          title: 'A Armadilha do Paraíso',
-          slug: 'a-armadilha-do-paraiso',
-          cover: 'assets/images/livros/a-armadilha-do-paraiso.jpg',
+          title: tracker.dataset.bookTitle,
+          slug: tracker.dataset.bookSlug,
+          cover: tracker.dataset.bookCover,
           totalPages,
           status: selectedStatus,
           pagesRead,

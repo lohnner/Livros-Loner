@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Nunito:wght@400;500;600;700;800&display=swap');
 
 :root {
   --ink: #1b1e1a;
@@ -10,8 +10,8 @@
   --accent-dark: #91331e;
   --muted: #6f7169;
   --line: #d9d5ca;
-  --serif: 'Instrument Serif', Georgia, serif;
-  --sans: 'DM Sans', Arial, sans-serif;
+  --serif: 'Bricolage Grotesque', 'Arial Rounded MT Bold', sans-serif;
+  --sans: 'Nunito', 'Arial Rounded MT', Arial, sans-serif;
   --shadow: 0 15px 40px rgba(31, 28, 21, .1);
 }
 
@@ -318,4 +318,37 @@ img { display: block; max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; }
+}
+
+/* Revisão global de legibilidade */
+body { font-size: 16px; line-height: 1.65; }
+.brand { letter-spacing: .7px; }
+.brand-mark { border-radius: 11px; }
+.brand strong { font-size: 15px; }
+.main-nav a { font-size: 12px; letter-spacing: .7px; }
+.login-link, .user-pill span:last-child { font-size: 11px; }
+.button, .filter-toggle { font-size: 11px; }
+.kicker { font-size: 11px; letter-spacing: 1.4px; }
+.footer-inner, .home-counts, .results-heading span { font-size: 11px; }
+.breadcrumbs { font-size: 10px; }
+.catalog-hero p, .detail-summary { font-size: 15px; }
+.catalog-search input, .filter-field input, .filter-field select { font-size: 14px; }
+.filter-field label, .reset-filters { font-size: 10px; }
+.alphabet-filter button { min-width: 34px; height: 34px; border-radius: 9px; font-size: 10px; }
+.catalog-item, .content-box, .detail-panel, .profile-panel, .auth-card, .profile-overview, .level-panel, .profile-library { border-radius: 18px; }
+.catalog-item > a:first-child img, .book-cover, .book-cover img { border-radius: 10px; }
+.item-label, .tag, .facts-grid dt, .book-card small { font-size: 9px; }
+.item-copy > p, .catalog-empty p, .facts-grid dd, .auth-card > p { font-size: 13px; }
+.item-meta, .profile-facts, .book-card span, .compact-sources { font-size: 11px; }
+.tag, .mini-author-link, .book-card, .copy-isbn, .auth-tabs, .auth-field input, .google-button, .level-badge { border-radius: 11px; }
+.content-box p, .profile-copy > p { font-size: 14px; }
+.tracker-intro p, .tracker-guest p, .tracker-field label, .tracker-save, .tracker-message { font-size: 10px; }
+.auth-tabs button, .auth-field label, .auth-submit, .auth-note, .level-copy span, .profile-book p, .logout-button { font-size: 11px !important; }
+.profile-identity p, .empty-profile { font-size: 12px; }
+.profile-book strong { font-size: 12px; }
+
+@media (max-width: 720px) {
+  body { font-size: 15px; }
+  .detail-copy h1 { font-size: clamp(38px, 12vw, 54px); letter-spacing: -1.3px; }
+  .detail-summary { font-size: 14px; }
 }

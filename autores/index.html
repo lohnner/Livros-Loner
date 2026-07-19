@@ -6,8 +6,8 @@
   <meta name="description" content="Catálogo de autores do Livros Loner com busca e filtros.">
   <meta name="theme-color" content="#1b1e1a">
   <title>Autores — Livros Loner</title>
-  <link rel="stylesheet" href="../assets/css/style.css?v=livros-loner-5">
-  <script src="../assets/js/app.js?v=livros-loner-5" defer></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=livros-loner-6">
+  <script src="../assets/js/app.js?v=livros-loner-6" defer></script>
 </head>
 <body data-root="../">
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -51,11 +51,11 @@
         <div class="filter-panel-grid">
           <div class="filter-field"><label for="authorBirth">Ano de nascimento</label><input id="authorBirth" type="number" min="1000" max="2100" placeholder="Ex.: 1950" data-filter-key="birth"></div>
           <div class="filter-field"><label for="authorDeath">Ano de falecimento</label><input id="authorDeath" type="number" min="1000" max="2100" placeholder="Ex.: 2013" data-filter-key="death"></div>
-          <div class="filter-field"><label for="authorNationality">Nacionalidade</label><select id="authorNationality" data-filter-key="nationality"><option value="">Todas</option><option value="estados-unidos">Estados Unidos</option></select></div>
-          <div class="filter-field"><label for="authorGenre">Gênero</label><select id="authorGenre" data-filter-key="genre"><option value="">Todos</option><option value="ficcao-cientifica">Ficção científica</option></select></div>
+          <div class="filter-field"><label for="authorNationality">Nacionalidade</label><select id="authorNationality" data-filter-key="nationality"><option value="">Todas</option><option value="estados-unidos">Estados Unidos</option><option value="reino-unido">Reino Unido</option></select></div>
+          <div class="filter-field"><label for="authorGenre">Gênero</label><select id="authorGenre" data-filter-key="genre"><option value="">Todos</option><option value="ficcao-cientifica">Ficção científica</option><option value="terror">Terror</option><option value="fantasia">Fantasia</option></select></div>
           <div class="filter-field"><label for="authorUniverse">Universo</label><select id="authorUniverse" data-filter-key="universe"><option value="">Todos</option><option value="star-wars">Star Wars</option><option value="star-trek">Star Trek</option><option value="alien">Alien</option></select></div>
-          <div class="filter-field"><label for="authorCountry">País</label><select id="authorCountry" data-filter-key="country"><option value="">Todos</option><option value="estados-unidos">Estados Unidos</option></select></div>
-          <div class="filter-field"><label for="authorStatus">Situação</label><select id="authorStatus" data-filter-key="status"><option value="">Todas</option><option value="falecida">Falecida</option></select></div>
+          <div class="filter-field"><label for="authorCountry">País</label><select id="authorCountry" data-filter-key="country"><option value="">Todos</option><option value="estados-unidos">Estados Unidos</option><option value="reino-unido">Reino Unido</option></select></div>
+          <div class="filter-field"><label for="authorStatus">Situação</label><select id="authorStatus" data-filter-key="status"><option value="">Todas</option><option value="falecida">Falecida</option><option value="em-atividade">Em atividade</option></select></div>
           <div class="filter-field"><label for="authorSort">Ordenar</label><select id="authorSort" data-filter-key="sort"><option value="title-asc">Nome A–Z</option><option value="title-desc">Nome Z–A</option><option value="year-desc">Nascimento recente</option><option value="year-asc">Nascimento antigo</option></select></div>
         </div>
         <div class="filter-panel-footer"><button class="reset-filters" type="button" data-reset-filters>Limpar todos os filtros</button></div>
@@ -66,7 +66,7 @@
         <button type="button" data-letter="A">A</button><button type="button" data-letter="B">B</button><button type="button" data-letter="C">C</button><button type="button" data-letter="D">D</button><button type="button" data-letter="E">E</button><button type="button" data-letter="F">F</button><button type="button" data-letter="G">G</button><button type="button" data-letter="H">H</button><button type="button" data-letter="I">I</button><button type="button" data-letter="J">J</button><button type="button" data-letter="K">K</button><button type="button" data-letter="L">L</button><button type="button" data-letter="M">M</button><button type="button" data-letter="N">N</button><button type="button" data-letter="O">O</button><button type="button" data-letter="P">P</button><button type="button" data-letter="Q">Q</button><button type="button" data-letter="R">R</button><button type="button" data-letter="S">S</button><button type="button" data-letter="T">T</button><button type="button" data-letter="U">U</button><button type="button" data-letter="V">V</button><button type="button" data-letter="W">W</button><button type="button" data-letter="X">X</button><button type="button" data-letter="Y">Y</button><button type="button" data-letter="Z">Z</button>
       </div>
 
-      <div class="results-heading"><h2>Autores no acervo</h2><span data-result-count>1 resultado</span></div>
+      <div class="results-heading"><h2>Autores no acervo</h2><span data-result-count>2 resultados</span></div>
       <div class="catalog-list">
         <article class="catalog-item" data-catalog-item data-title="A. C. Crispin" data-letter="A" data-birth="1950" data-death="2013" data-nationality="estados-unidos" data-country="estados-unidos" data-genre="ficcao-cientifica" data-universe="star-wars star-trek alien" data-status="falecida" data-search="A. C. Crispin Ann Carol Crispin Star Wars Star Trek Alien ficção científica">
           <a href="a-c-crispin.html"><img src="../assets/images/autores/a-c-crispin.jpg" alt="Retrato de A. C. Crispin" width="94" height="114"></a>
@@ -77,6 +77,16 @@
             <p>Autora da Trilogia Han Solo e de obras ambientadas em Star Trek e Alien.</p>
           </div>
           <a class="item-action" href="a-c-crispin.html" aria-label="Abrir perfil de A. C. Crispin">→</a>
+        </article>
+        <article class="catalog-item" data-catalog-item data-title="Tim Lebbon" data-letter="T" data-birth="1969" data-nationality="reino-unido" data-country="reino-unido" data-genre="ficcao-cientifica terror fantasia" data-universe="star-wars alien" data-status="em-atividade" data-search="Tim Lebbon Reino Unido Star Wars Alien terror fantasia ficção científica">
+          <a href="tim-lebbon.html"><img src="../assets/images/autores/tim-lebbon.png" alt="Retrato de Tim Lebbon" width="94" height="114"></a>
+          <div class="item-copy">
+            <span class="item-label">Autor · Ficção científica, terror e fantasia</span>
+            <h3><a href="tim-lebbon.html">Tim Lebbon</a></h3>
+            <div class="item-meta"><span>Nascido em 1969</span><span>Reino Unido</span><span>1 livro no acervo</span></div>
+            <p>Escritor britânico premiado, autor de romances originais e histórias nos universos Star Wars e Alien.</p>
+          </div>
+          <a class="item-action" href="tim-lebbon.html" aria-label="Abrir perfil de Tim Lebbon">→</a>
         </article>
       </div>
       <div class="catalog-empty" data-catalog-empty hidden><strong>Nenhum autor encontrado</strong><p>Tente outra letra ou limpe os filtros.</p></div>
