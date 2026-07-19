@@ -138,8 +138,8 @@ img { display: block; max-width: 100%; }
 .mini-author-link { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; padding: 7px 12px 7px 7px; border: 1px solid var(--line); }
 .mini-author-link img { width: 38px; height: 38px; object-fit: cover; border-radius: 50%; }
 .mini-author-link small, .mini-author-link strong { display: block; }
-.mini-author-link small { color: var(--muted); font-size: 7px; text-transform: uppercase; }
-.mini-author-link strong { font-size: 10px; }
+.mini-author-link small { color: var(--muted); font-size: 8px; text-transform: uppercase; letter-spacing: .35px; }
+.mini-author-link strong { font-size: 12px; }
 .mini-author-link:hover strong { color: var(--accent); }
 
 .compact-info { display: grid; grid-template-columns: 1.35fr .65fr; gap: 18px; margin-top: 18px; }
@@ -174,7 +174,7 @@ img { display: block; max-width: 100%; }
 .tracker-progress { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; margin-top: 3px; }
 .tracker-progress-bar { height: 4px; overflow: hidden; background: rgba(255,255,255,.12); }
 .tracker-progress-bar span { display: block; width: 0; height: 100%; background: var(--accent); transition: width .2s ease; }
-.tracker-progress small { color: rgba(255,255,255,.55); font-size: 7px; }
+.tracker-progress small { color: rgba(255,255,255,.68); font-size: 9px; }
 .tracker-message { grid-column: 1 / -1; min-height: 14px; margin: 0; color: #efad9e; font-size: 8px; }
 
 .auth-page { min-height: calc(100vh - 131px); display: grid; place-items: center; padding-block: 45px; }
