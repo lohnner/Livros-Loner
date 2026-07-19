@@ -3,167 +3,55 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Livros Loner — um acervo editorial de livros, autores e histórias que merecem permanecer na estante.">
-  <meta name="theme-color" content="#171915">
-  <meta property="og:title" content="Livros Loner — Acervo de livros e autores">
-  <meta property="og:description" content="Conheça livros, escritores e os detalhes por trás de cada obra.">
+  <meta name="description" content="Livros Loner — um acervo simples de livros e autores.">
+  <meta name="theme-color" content="#1b1e1a">
+  <meta property="og:title" content="Livros Loner">
+  <meta property="og:description" content="Um acervo simples de livros e autores.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://lohnner.github.io/Livros-Loner/index.html">
-  <meta property="og:image" content="https://lohnner.github.io/Livros-Loner/assets/images/livros/a-armadilha-do-paraiso.jpg">
-  <title>Livros Loner — Acervo de livros e autores</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=livros-loner-1">
-  <script src="assets/js/app.js?v=livros-loner-1" defer></script>
+  <title>Livros Loner — Acervo literário</title>
+  <link rel="stylesheet" href="assets/css/style.css?v=livros-loner-2">
+  <script src="assets/js/app.js?v=livros-loner-2" defer></script>
 </head>
 <body data-root="">
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
   <header class="site-header">
     <div class="header-inner shell">
-      <a class="brand" href="index.html" aria-label="Livros Loner — página inicial">
+      <a class="brand" href="index.html" aria-label="Livros Loner — início">
         <span class="brand-mark" aria-hidden="true">LL</span>
-        <span class="brand-copy"><strong>Livros Loner</strong><small>Acervo literário</small></span>
+        <strong>Livros Loner</strong>
       </a>
-
       <nav class="main-nav" id="mainNav" aria-label="Navegação principal">
         <a class="active" href="index.html">Início</a>
-        <a href="#acervo">Livros</a>
-        <a href="autores/a-c-crispin.html">Autores</a>
-        <a href="#sobre">Sobre</a>
+        <a href="livros/index.html">Livros</a>
+        <a href="autores/index.html">Autores</a>
       </nav>
-
-      <div class="header-actions">
-        <button class="search-toggle" type="button" data-open-search aria-label="Abrir busca">
-          <span aria-hidden="true">⌕</span> Buscar
-        </button>
-        <button class="menu-toggle" type="button" data-menu-toggle aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menu">☰</button>
-      </div>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menu">☰</button>
     </div>
   </header>
 
-  <main id="conteudo">
-    <section class="home-hero">
-      <div class="hero-grid shell">
-        <div class="hero-copy reveal">
-          <span class="eyebrow">Uma biblioteca, muitas galáxias</span>
-          <h1>Livros que ficam.<br><em>Histórias que levam.</em></h1>
-          <p>Um acervo pessoal para descobrir obras, conhecer quem as escreveu e guardar os detalhes que fazem cada leitura valer a pena.</p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="#acervo">Explorar o acervo <span aria-hidden="true">↓</span></a>
-            <a class="text-link" href="autores/a-c-crispin.html">Conhecer a autora em destaque <span aria-hidden="true">↗</span></a>
-          </div>
-        </div>
-
-        <a class="featured-book reveal" href="livros/a-armadilha-do-paraiso.html" aria-label="Ver detalhes de A Armadilha do Paraíso">
-          <span class="feature-index">Acervo 001</span>
-          <div class="book-stack">
-            <span class="book-shadow" aria-hidden="true"></span>
-            <img src="assets/images/livros/a-armadilha-do-paraiso.jpg" alt="Capa brasileira do livro A Armadilha do Paraíso, de A. C. Crispin" width="342" height="500">
-          </div>
-          <div class="feature-caption">
-            <span>Livro em destaque</span>
-            <strong>A Armadilha do Paraíso</strong>
-            <small>A. C. Crispin · 2016</small>
-          </div>
-        </a>
+  <main id="conteudo" class="minimal-home">
+    <section class="minimal-hero shell">
+      <span class="kicker">Acervo literário</span>
+      <h1>Livros e autores,<br><em>sem complicação.</em></h1>
+      <p>Encontre uma obra, conheça quem escreveu e siga sua próxima leitura.</p>
+      <div class="home-actions">
+        <a class="button button-primary" href="livros/index.html">Explorar livros <span aria-hidden="true">→</span></a>
+        <a class="button button-outline" href="autores/index.html">Ver autores</a>
       </div>
-      <div class="hero-marquee" aria-hidden="true">
-        <span>Ficção científica</span><i>✦</i><span>Autores</span><i>✦</i><span>Biografias</span><i>✦</i><span>Edições</span><i>✦</i><span>Universos</span>
-      </div>
-    </section>
-
-    <section class="catalog-section shell" id="acervo" aria-labelledby="catalogo-title">
-      <div class="section-heading reveal">
-        <div>
-          <span class="eyebrow dark">Na estante</span>
-          <h2 id="catalogo-title">Acervo de livros</h2>
-        </div>
-        <p>O acervo começa por uma origem: a juventude de um dos maiores contrabandistas da galáxia.</p>
-      </div>
-
-      <article class="catalog-card reveal">
-        <a class="catalog-cover" href="livros/a-armadilha-do-paraiso.html">
-          <img src="assets/images/livros/a-armadilha-do-paraiso.jpg" alt="Capa de A Armadilha do Paraíso" width="342" height="500">
-          <span>Ver livro</span>
-        </a>
-        <div class="catalog-copy">
-          <div class="catalog-meta"><span>Star Wars Legends</span><span>Ficção científica</span><span>Livro 1 de 3</span></div>
-          <h3><a href="livros/a-armadilha-do-paraiso.html">A Armadilha do Paraíso</a></h3>
-          <p class="original-title">The Paradise Snare</p>
-          <p>Antes da Aliança Rebelde e da Millennium Falcon, Han Solo precisa escapar do domínio de Garris Shrike e encontrar um caminho próprio entre pilotos, criminosos e os perigos de Ylesia.</p>
-          <div class="catalog-footer">
-            <a class="author-chip" href="autores/a-c-crispin.html">
-              <img src="assets/images/autores/a-c-crispin.jpg" alt="" width="48" height="48">
-              <span><small>Escrito por</small><strong>A. C. Crispin</strong></span>
-            </a>
-            <a class="circle-link" href="livros/a-armadilha-do-paraiso.html" aria-label="Abrir página do livro">↗</a>
-          </div>
-        </div>
-        <div class="catalog-number" aria-hidden="true">01</div>
-      </article>
-    </section>
-
-    <section class="author-spotlight" aria-labelledby="autora-title">
-      <div class="author-grid shell">
-        <div class="author-portrait reveal">
-          <img src="assets/images/autores/a-c-crispin.jpg" alt="Retrato da escritora norte-americana A. C. Crispin" width="660" height="500">
-          <span class="portrait-label">1950 — 2013</span>
-        </div>
-        <div class="author-copy reveal">
-          <span class="eyebrow">Autora em destaque</span>
-          <h2 id="autora-title">A. C.<br>Crispin</h2>
-          <p>Romancista norte-americana reconhecida por expandir universos como Star Wars, Star Trek e Alien — e por defender novos escritores como cofundadora do Writer Beware.</p>
-          <dl class="mini-facts">
-            <div><dt>Estreia</dt><dd>1983</dd></div>
-            <div><dt>Obras</dt><dd>Mais de 20 romances</dd></div>
-            <div><dt>Gênero</dt><dd>Ficção científica</dd></div>
-          </dl>
-          <a class="button button-light" href="autores/a-c-crispin.html">Ler perfil completo <span aria-hidden="true">→</span></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="manifesto shell" id="sobre">
-      <span class="manifesto-number" aria-hidden="true">LL</span>
-      <div class="reveal">
-        <span class="eyebrow dark">Sobre o projeto</span>
-        <h2>Um acervo feito para ir além da capa.</h2>
-      </div>
-      <div class="manifesto-copy reveal">
-        <p>Livros Loner reúne informações editoriais, contexto, sinopses e perfis de escritores em páginas claras e cuidadosas.</p>
-        <p>Cada novo título cria uma ponte para sua autoria, sua edição e o universo ao qual pertence.</p>
+      <div class="home-counts" aria-label="Tamanho atual do acervo">
+        <span><strong>1</strong> livro</span>
+        <span><strong>1</strong> autora</span>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="footer-inner shell">
-      <a class="brand footer-brand" href="index.html">
-        <span class="brand-mark" aria-hidden="true">LL</span>
-        <span class="brand-copy"><strong>Livros Loner</strong><small>Acervo literário</small></span>
-      </a>
-      <p>Informação para leitores curiosos.</p>
-      <nav aria-label="Navegação do rodapé">
-        <a href="#acervo">Livros</a>
-        <a href="autores/a-c-crispin.html">Autores</a>
-        <a href="#sobre">Sobre</a>
-      </nav>
-      <small>© <span data-current-year>2026</span> Livros Loner</small>
+      <span>Livros Loner</span>
+      <small>© <span data-current-year>2026</span></small>
     </div>
   </footer>
-
-  <dialog class="search-dialog" id="searchDialog" aria-labelledby="search-title">
-    <form method="dialog" class="search-panel">
-      <div class="search-heading">
-        <div><span class="eyebrow dark">Pesquisa no acervo</span><h2 id="search-title">O que você procura?</h2></div>
-        <button type="submit" class="close-search" aria-label="Fechar busca">×</button>
-      </div>
-      <label class="search-field">
-        <span class="sr-only">Buscar livro ou autor</span>
-        <input type="search" id="siteSearch" placeholder="Digite um livro ou autor..." autocomplete="off">
-        <kbd>Esc</kbd>
-      </label>
-      <div class="search-results" id="searchResults" aria-live="polite"></div>
-    </form>
-  </dialog>
 </body>
 </html>
