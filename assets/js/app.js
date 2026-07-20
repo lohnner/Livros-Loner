@@ -570,6 +570,12 @@
     const books = Object.values(currentProfile.books || {}).filter(isActiveBook).sort((a, b) => (
       String(b.updatedAt || '').localeCompare(String(a.updatedAt || ''))
     ));
+    const catalogBySlug = new Map((window.LIVROS_LONER_BOOKS || []).map(book => [book.slug, book]));
+    const pagesRead = books.reduce((total, book) => total + Math.max(0, Number(book.pagesRead || 0)), 0);
+    const setProfileValue = (selector, value) => {
+      const element = document.querySelector(selector);
+      if (element) element.textContent = value;
+    };
 
     document.querySelector('[data-profile-initials]').textContent = initialsFor(currentProfile.displayName);
     document.querySelector('[data-profile-name]').textContent = currentProfile.displayName;
@@ -579,6 +585,10 @@
     document.querySelector('[data-level-progress]').style.width = `${level.progress}%`;
     document.querySelector('[data-level-copy]').textContent =
       `${xp - level.floor} de ${level.ceiling - level.floor} XP para o próximo nível`;
+    setProfileValue('[data-stat-reading]', books.filter(book => book.status === 'reading').length);
+    setProfileValue('[data-stat-finished]', books.filter(book => book.status === 'finished').length);
+    setProfileValue('[data-stat-want]', books.filter(book => book.status === 'want').length);
+    setProfileValue('[data-stat-pages]', pagesRead.toLocaleString('pt-BR'));
 
     const list = document.querySelector('[data-profile-books]');
     if (!list) return;
@@ -588,23 +598,36 @@
     }
 
     list.replaceChildren(...books.map(book => {
+      const catalogBook = catalogBySlug.get(book.slug);
+      const titleText = catalogBook?.title || book.title;
+      const totalPages = Number(catalogBook?.pages || book.totalPages || 0);
+      const currentPages = Math.min(totalPages, Math.max(0, Number(book.pagesRead || 0)));
+      const percentage = totalPages ? Math.min(100, (currentPages / totalPages) * 100) : 0;
       const link = document.createElement('a');
       link.className = 'profile-book';
       link.href = `${root}livros/livro.html?slug=${encodeURIComponent(book.slug)}`;
 
       const image = document.createElement('img');
-      image.src = `${root}${book.cover}`;
-      image.alt = '';
+      image.src = catalogBook
+        ? `${root}assets/images/livros/${catalogBook.cover}`
+        : `${root}${book.cover}`;
+      image.alt = `Capa de ${titleText}`;
+      image.loading = 'lazy';
 
       const copy = document.createElement('span');
+      copy.className = 'profile-book-copy';
       const title = document.createElement('h3');
-      title.textContent = book.title;
+      title.textContent = titleText;
       const details = document.createElement('p');
-      details.textContent = `${statusLabels[book.status] || 'Sem status'} · ${book.pagesRead} de ${book.totalPages} páginas`;
-      copy.append(title, details);
+      details.textContent = `${statusLabels[book.status] || 'Sem status'} · ${currentPages} de ${totalPages} páginas`;
+      const progress = document.createElement('span');
+      progress.className = 'profile-book-progress';
+      progress.innerHTML = `<i style="width:${percentage}%"></i>`;
+      copy.append(title, details, progress);
 
       const experience = document.createElement('strong');
-      experience.textContent = `${book.xpEarned} XP`;
+      experience.className = 'profile-book-xp';
+      experience.textContent = `${Math.max(0, Number(book.xpEarned || 0))} XP`;
       link.append(image, copy, experience);
       return link;
     }));
