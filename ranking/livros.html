@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ranking dos livros com mais leitores ativos no Livros Loner.">
+  <meta name="theme-color" content="#168dcc">
+  <title>Ranking de Livros — Livros Loner</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=livros-loner-12">
+  <script src="../assets/js/books.js?v=livros-loner-12" defer></script>
+  <script src="../assets/js/app.js?v=livros-loner-12" defer></script>
+</head>
+<body data-root="../" data-page="ranking-books">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header"><div class="header-inner shell">
+    <a class="brand" href="../index.html" aria-label="Livros Loner — início"><span class="brand-mark" aria-hidden="true">LL</span><strong>Livros Loner</strong></a>
+    <nav class="main-nav" id="mainNav" aria-label="Navegação principal">
+      <a href="../index.html">Início</a><a href="../livros/index.html">Livros</a>
+      <div class="nav-dropdown"><a class="active" href="livros.html" aria-haspopup="true">Ranking</a><div class="nav-dropdown-menu"><a class="active" href="livros.html">Ranking de Livros</a><a href="usuarios.html">Ranking de Usuários</a></div></div>
+      <button class="random-book-button" type="button" data-random-book>↝ Aleatório</button>
+    </nav>
+    <div class="account-nav"><a class="login-link auth-guest" href="../login.html">Entrar</a><a class="user-pill auth-user" href="../perfil.html"><span class="user-initials" data-user-initials>L</span><span data-header-level>Nível 1</span></a></div>
+    <button class="menu-toggle" type="button" data-menu-toggle aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menu">☰</button>
+  </div></header>
+  <main id="conteudo" class="ranking-page">
+    <section class="catalog-hero"><div class="shell">
+      <div class="breadcrumbs"><a href="../index.html">Início</a><i>›</i><span>Ranking de Livros</span></div>
+      <div class="catalog-hero-row"><div><span class="kicker">Mais lidos agora</span><h1>Ranking de Livros</h1></div><p>Os livros são ordenados pela quantidade de usuários que marcaram “Estou lendo”.</p></div>
+    </div></section>
+    <section class="shell ranking-content" aria-live="polite">
+      <div class="ranking-tabs"><a class="active" href="livros.html">Livros</a><a href="usuarios.html">Usuários</a></div>
+      <div class="ranking-list" data-ranking-books><div class="ranking-loading">Carregando ranking…</div></div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="footer-inner shell"><span>Livros Loner</span><small>© <span data-current-year>2026</span></small></div></footer>
+</body>
+</html>

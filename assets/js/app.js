@@ -219,6 +219,114 @@
     };
   };
 
+  const publicRankingData = profile => {
+    const books = Object.values(profile?.books || {}).filter(isActiveBook);
+    const xp = getTotalXp(profile);
+    return {
+      displayName: profile.displayName || 'Leitor',
+      photoURL: profile.photoURL || '',
+      xp,
+      level: getLevelData(xp).level,
+      readingSlugs: books.filter(book => book.status === 'reading').map(book => book.slug),
+      updatedAt: new Date().toISOString()
+    };
+  };
+
+  const syncPublicRanking = async profile => {
+    if (!db || !profile?.uid) return;
+    try {
+      await db.collection('publicProfiles').doc(profile.uid).set({
+        livrosLonerRanking: publicRankingData(profile)
+      }, { merge: true });
+    } catch (error) {
+      console.warn('Ranking público temporariamente indisponível.', error);
+    }
+  };
+
+  const rankingPosition = position => {
+    if (position === 1) return '🥇';
+    if (position === 2) return '🥈';
+    if (position === 3) return '🥉';
+    return String(position).padStart(2, '0');
+  };
+
+  const renderBookRanking = profiles => {
+    const container = document.querySelector('[data-ranking-books]');
+    if (!container) return;
+    const counts = new Map((window.LIVROS_LONER_BOOKS || []).map(book => [book.slug, 0]));
+    profiles.forEach(profile => {
+      new Set(profile.readingSlugs || []).forEach(slug => {
+        if (counts.has(slug)) counts.set(slug, counts.get(slug) + 1);
+      });
+    });
+    const books = [...(window.LIVROS_LONER_BOOKS || [])].sort((a, b) => (
+      counts.get(b.slug) - counts.get(a.slug) || a.title.localeCompare(b.title, 'pt-BR')
+    ));
+    container.replaceChildren(...books.map((book, index) => {
+      const row = document.createElement('a');
+      row.className = 'ranking-row ranking-book-row';
+      row.href = `${root}livros/livro.html?slug=${encodeURIComponent(book.slug)}`;
+      row.innerHTML = `
+        <span class="ranking-position">${rankingPosition(index + 1)}</span>
+        <img class="ranking-cover" src="${root}assets/images/livros/${book.cover}" alt="">
+        <span class="ranking-main"><strong>${book.title}</strong><small>${book.author}</small></span>
+        <span class="ranking-score"><strong>${counts.get(book.slug)}</strong><small>${counts.get(book.slug) === 1 ? 'leitor lendo' : 'leitores lendo'}</small></span>`;
+      return row;
+    }));
+  };
+
+  const renderUserRanking = profiles => {
+    const container = document.querySelector('[data-ranking-users]');
+    if (!container) return;
+    const users = [...profiles].sort((a, b) => (
+      Number(b.xp || 0) - Number(a.xp || 0) ||
+      String(a.displayName || '').localeCompare(String(b.displayName || ''), 'pt-BR')
+    ));
+    if (!users.length) {
+      container.innerHTML = '<div class="ranking-empty">O ranking aparecerá quando os leitores entrarem novamente no site.</div>';
+      return;
+    }
+    container.replaceChildren(...users.map((user, index) => {
+      const row = document.createElement('article');
+      row.className = 'ranking-row ranking-user-row';
+      const avatar = document.createElement('span');
+      avatar.className = 'ranking-avatar';
+      avatar.textContent = initialsFor(user.displayName);
+      const position = document.createElement('span');
+      position.className = 'ranking-position';
+      position.textContent = rankingPosition(index + 1);
+      const main = document.createElement('span');
+      main.className = 'ranking-main';
+      const name = document.createElement('strong');
+      name.textContent = user.displayName || 'Leitor';
+      const level = document.createElement('small');
+      level.textContent = `Nível ${user.level || getLevelData(Number(user.xp || 0)).level}`;
+      main.append(name, level);
+      const score = document.createElement('span');
+      score.className = 'ranking-score';
+      score.innerHTML = `<strong>${Number(user.xp || 0).toLocaleString('pt-BR')}</strong><small>XP</small>`;
+      row.append(position, avatar, main, score);
+      return row;
+    }));
+  };
+
+  const renderRankings = async () => {
+    if (!document.querySelector('[data-ranking-books], [data-ranking-users]')) return;
+    try {
+      const snapshot = await db.collection('publicProfiles').get();
+      const profiles = snapshot.docs
+        .map(doc => doc.data()?.livrosLonerRanking)
+        .filter(Boolean);
+      renderBookRanking(profiles);
+      renderUserRanking(profiles);
+    } catch (error) {
+      console.warn('Não foi possível carregar o ranking.', error);
+      document.querySelectorAll('[data-ranking-books], [data-ranking-users]').forEach(container => {
+        container.innerHTML = '<div class="ranking-empty">Não foi possível carregar o ranking agora. Tente novamente em instantes.</div>';
+      });
+    }
+  };
+
   const cacheProfile = profile => {
     localStorage.setItem(profileKey(profile.uid), JSON.stringify(profile));
   };
@@ -227,6 +335,7 @@
     cacheProfile(profile);
     try {
       await db.collection('users').doc(profile.uid).set({ livrosLonerProfile: profile }, { merge: true });
+      await syncPublicRanking(profile);
     } catch (error) {
       console.warn('Perfil salvo somente neste dispositivo.', error);
     }
@@ -510,10 +619,15 @@
       auth = firebase.auth();
       db = firebase.firestore();
       setupAuthPage();
+      renderRankings();
 
       auth.onAuthStateChanged(async user => {
         currentUser = user;
         currentProfile = user ? await loadProfile(user) : null;
+        if (currentProfile) {
+          await syncPublicRanking(currentProfile);
+          renderRankings();
+        }
         renderHeaderAccount();
         renderTracker();
         renderProfile();
