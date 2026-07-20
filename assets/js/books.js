@@ -181,10 +181,27 @@ window.LIVROS_LONER_BOOKS = [
   }
 ];
 
+const LIVROS_LONER_AUTHOR_FOLDERS = {
+  Brasileiro: 'brasil',
+  Brasileira: 'brasil',
+  Moçambicana: 'mocambique',
+  Português: 'portugal',
+  Tcheco: 'tchequia',
+  Francês: 'franca'
+};
+
+window.LIVROS_LONER_BOOKS.forEach(book => {
+  const folder = LIVROS_LONER_AUTHOR_FOLDERS[book.authorNationality];
+  book.page = `livros/${folder}/${book.slug}.html`;
+});
+
 (() => {
   const books = window.LIVROS_LONER_BOOKS;
   const root = document.body?.dataset.root || '';
-  const bookHref = slug => `${root}livros/livro.html?slug=${encodeURIComponent(slug)}`;
+  const bookHref = slug => {
+    const book = books.find(item => item.slug === slug);
+    return `${root}${book?.page || 'livros/index.html'}`;
+  };
   const coverSrc = cover => `${root}assets/images/livros/${cover}`;
 
   const catalog = document.querySelector('[data-book-catalog-list]');
@@ -199,7 +216,7 @@ window.LIVROS_LONER_BOOKS = [
 
   const detail = document.querySelector('[data-book-detail]');
   if (detail) {
-    const slug = new URLSearchParams(location.search).get('slug');
+    const slug = document.body.dataset.bookSlug || new URLSearchParams(location.search).get('slug');
     const book = books.find(item => item.slug === slug) || books[0];
     document.title = `${book.title} — Livros Loner`;
     const setText = (selector, value) => {

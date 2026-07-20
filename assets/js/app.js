@@ -46,7 +46,7 @@
       const books = window.LIVROS_LONER_BOOKS || [];
       if (!books.length) return;
       const book = books[Math.floor(Math.random() * books.length)];
-      window.location.href = `${root}livros/livro.html?slug=${encodeURIComponent(book.slug)}`;
+      window.location.href = `${root}${book.page}`;
     });
   });
 
@@ -265,7 +265,7 @@
     container.replaceChildren(...books.map((book, index) => {
       const row = document.createElement('a');
       row.className = 'ranking-row ranking-book-row';
-      row.href = `${root}livros/livro.html?slug=${encodeURIComponent(book.slug)}`;
+      row.href = `${root}${book.page}`;
       row.innerHTML = `
         <span class="ranking-position">${rankingPosition(index + 1)}</span>
         <img class="ranking-cover" src="${root}assets/images/livros/${book.cover}" alt="">
@@ -605,7 +605,9 @@
       const percentage = totalPages ? Math.min(100, (currentPages / totalPages) * 100) : 0;
       const link = document.createElement('a');
       link.className = 'profile-book';
-      link.href = `${root}livros/livro.html?slug=${encodeURIComponent(book.slug)}`;
+      link.href = catalogBook
+        ? `${root}${catalogBook.page}`
+        : `${root}livros/index.html`;
 
       const image = document.createElement('img');
       image.src = catalogBook
